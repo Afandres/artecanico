@@ -4,15 +4,18 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\BreedController;
 use App\Http\Controllers\TreatmentController;
+use App\Http\Controllers\AppointmentController;
+
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('appointment.index');
+});
+    
+Route::controller(AppointmentController::class)->group(function () {
+    Route::get('/appointments', 'index')->name('appointment.index');
 });
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])
 ->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
 
     Route::controller(BreedController::class)->group(function () {
         Route::get('/breeds', 'index')->name('breed.index');
@@ -28,5 +31,4 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::post('/treatments/update', 'update')->name('treatment.update');
         Route::delete('/treatments/delete/{id}', 'delete')->name('treatment.delete');
     });
-
 });

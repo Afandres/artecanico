@@ -5,20 +5,43 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('appointment.index') }}">
                         <i class="fa-solid fa-bone"></i>
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('breed.index') }}" :active="request()->routeIs('breed.index')">
-                        Razas
-                    </x-nav-link>
+                @auth  
+                <div class="hidden sm:flex sm:items-center sm:ms-6">
+                    <x-dropdown align="left" width="48">
+                        
+                        <x-slot name="trigger">
+                            <button type="button"
+                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white hover:text-gray-700 focus:outline-none">
+                                Parámetros
+                                <svg class="ms-2 size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            <x-dropdown-link href="{{ route('breed.index') }}">
+                                Razas
+                            </x-dropdown-link>
+
+                            <x-dropdown-link href="{{ route('treatment.index') }}">
+                                Tratamientos
+                            </x-dropdown-link>
+                        </x-slot>
+
+                    </x-dropdown>
                 </div>
+                @endauth
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('treatment.index') }}" :active="request()->routeIs('treatment.index')">
-                        Tratamientos
+                    <x-nav-link href="{{ route('appointment.index') }}" :active="request()->routeIs('appointment.index')">
+                        Citas
                     </x-nav-link>
                 </div>
             </div>
@@ -80,6 +103,7 @@
                 <div class="ms-3 relative">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
+                        @auth
                             @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
                                 <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
                                     <img class="size-8 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
@@ -95,17 +119,17 @@
                                     </button>
                                 </span>
                             @endif
+                        @endauth
+
+                        @guest
+                            <a href="{{ route('login') }}"
+                            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">
+                                Iniciar sesión
+                            </a>
+                        @endguest
                         </x-slot>
 
                         <x-slot name="content">
-                            <!-- Account Management -->
-                            <div class="block px-4 py-2 text-xs text-gray-400">
-                                {{ __('Manage Account') }}
-                            </div>
-
-                            <x-dropdown-link href="{{ route('profile.show') }}">
-                                {{ __('Profile') }}
-                            </x-dropdown-link>
 
                             @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                                 <x-dropdown-link href="{{ route('api-tokens.index') }}">
@@ -113,15 +137,13 @@
                                 </x-dropdown-link>
                             @endif
 
-                            <div class="border-t border-gray-200"></div>
-
                             <!-- Authentication -->
                             <form method="POST" action="{{ route('logout') }}" x-data>
                                 @csrf
 
                                 <x-dropdown-link href="{{ route('logout') }}"
                                          @click.prevent="$root.submit();">
-                                    {{ __('Log Out') }}
+                                    Cerrar Sesión
                                 </x-dropdown-link>
                             </form>
                         </x-slot>
@@ -143,17 +165,27 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+
+        @auth            
         <div class="pt-2 pb-3 space-y-1">
+            <div class="block px-4 py-2 text-xs text-gray-400">
+                Parámetros
+            </div>
             <x-responsive-nav-link href="{{ route('breed.index') }}" :active="request()->routeIs('breed.index')">
                 Razas
             </x-responsive-nav-link>
-        </div>
-        <div class="pt-2 pb-3 space-y-1">
+                    
             <x-responsive-nav-link href="{{ route('treatment.index') }}" :active="request()->routeIs('treatment.index')">
                 Tratamientos
             </x-responsive-nav-link>
         </div>
+        @endauth
 
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link href="{{ route('appointment.index') }}" :active="request()->routeIs('appointment.index')">
+                Citas   
+            </x-responsive-nav-link>
+        </div>
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="flex items-center px-4">
@@ -163,18 +195,21 @@
                     </div>
                 @endif
 
-                <div>
-                    <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                    <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-                </div>
+                @auth    
+                    <div>
+                        <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
+                    </div>
+                @endauth
+                @guest
+                    <a href="{{ route('login') }}"
+                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">
+                        Iniciar sesión
+                    </a>
+                @endguest
             </div>
 
             <div class="mt-3 space-y-1">
                 <!-- Account Management -->
-                <x-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
                 @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                     <x-responsive-nav-link href="{{ route('api-tokens.index') }}" :active="request()->routeIs('api-tokens.index')">
                         {{ __('API Tokens') }}
@@ -182,14 +217,16 @@
                 @endif
 
                 <!-- Authentication -->
+                @auth
+                    
                 <form method="POST" action="{{ route('logout') }}" x-data>
                     @csrf
-
                     <x-responsive-nav-link href="{{ route('logout') }}"
-                                   @click.prevent="$root.submit();">
-                        {{ __('Log Out') }}
+                        @click.prevent="$root.submit();">
+                        Cerrar Sesión
                     </x-responsive-nav-link>
                 </form>
+            @endauth
 
                 <!-- Team Management -->
                 @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())

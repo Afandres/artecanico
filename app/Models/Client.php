@@ -7,14 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Client extends Model
 {
     protected $fillable = [
-        'user_id',
-        'address',
+        'name',
         'emergency_phone',
-        'preference',
     ];
 
-    public function user()
+    public function pets()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(Pet::class);
     }
 }

@@ -14,4 +14,9 @@ class Treatment extends Model
     public function getDescriptionNullableAttribute(){
         return $this->description ?? 'Sin descripción';
     }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
 }
