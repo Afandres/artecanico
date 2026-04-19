@@ -12,9 +12,13 @@ class Appointment extends Model
         'appointment_date',
         'status',
         'observations',
-        'whatsapp_notification',
+        'price',
+        'photo'
     ];
 
+    protected $casts = [
+        'appointment_date' => 'datetime',
+    ];
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -23,5 +27,10 @@ class Appointment extends Model
     public function pet()
     {
         return $this->belongsTo(Pet::class);
+    }
+
+    public function treatments()
+    {
+        return $this->belongsToMany(Treatment::class, 'appointments_treatments');
     }
 }

@@ -13,7 +13,6 @@
                                 <th>Nombre</th>
                                 <th>Descripción</th>
                                 <th>Tamaño</th>
-                                <th>Tiempo de arreglo</th>
                                 <th>
                                     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#breedAddModal">
                                         <i class="fa-solid fa-plus"></i>
@@ -27,7 +26,6 @@
                                 <td>{{ $breed->name }}</td>
                                 <td>{{ $breed->description_nullable }}</td>
                                 <td>{{ $breed->size }}</td>
-                                <td>{{ $breed->formatted_grooming_time }}</td>
                                 <td>
                                     <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#breedUpdateModal{{ $breed->id }}">
                                         <i class="fa-solid fa-edit"></i>

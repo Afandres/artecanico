@@ -6,15 +6,15 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('appointment.index') }}">
-                        <i class="fa-solid fa-bone"></i>
+                        <img src="{{ asset('images/logo.png') }}" width="80">
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
-                @auth  
+              
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
+                    @auth                            
                     <x-dropdown align="left" width="48">
-                        
                         <x-slot name="trigger">
                             <button type="button"
                                 class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white hover:text-gray-700 focus:outline-none">
@@ -35,13 +35,16 @@
                                 Tratamientos
                             </x-dropdown-link>
                         </x-slot>
-
                     </x-dropdown>
+                    @endauth
                 </div>
-                @endauth
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('appointment.index') }}" :active="request()->routeIs('appointment.index')">
                         Citas
+                    </x-nav-link>
+
+                    <x-nav-link href="{{ route('pet.index') }}" :active="request()->routeIs('pet.index')">
+                        Mascotas
                     </x-nav-link>
                 </div>
             </div>
@@ -165,8 +168,7 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-
-        @auth            
+        @auth
         <div class="pt-2 pb-3 space-y-1">
             <div class="block px-4 py-2 text-xs text-gray-400">
                 Parámetros
@@ -180,10 +182,13 @@
             </x-responsive-nav-link>
         </div>
         @endauth
-
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link href="{{ route('appointment.index') }}" :active="request()->routeIs('appointment.index')">
                 Citas   
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link href="{{ route('pet.index') }}" :active="request()->routeIs('pet.index')">
+                Mascotas   
             </x-responsive-nav-link>
         </div>
         <!-- Responsive Settings Options -->

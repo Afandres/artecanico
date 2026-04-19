@@ -1,0 +1,15 @@
+{
+  "name": "ArteCanino",
+  "short_name": "ArteCanino",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#dc2626",
+  "icons": [
+    {
+      "src": "/images/logo.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ]
+}

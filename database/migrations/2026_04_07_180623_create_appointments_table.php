@@ -18,7 +18,8 @@ return new class extends Migration
             $table->dateTime('appointment_date');   
             $table->enum('status', ['Pendiente', 'En proceso', 'Completada', 'Cancelada'])->default('Pendiente');
             $table->string('observations')->nullable();
-            $table->boolean('whatsapp_notification')->default(false);
+            $table->integer('price')->nullable();
+            $table->string('photo')->nullable();
             $table->timestamps();
         });
     }

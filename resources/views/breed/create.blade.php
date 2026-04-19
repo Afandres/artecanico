@@ -31,15 +31,6 @@
               </div>
             @enderror
           </div>
-          <div class="mb-3">
-            <label for="averageGroomingTime" class="form-label">Tiempo de arreglo (Minutos)</label>
-            <input type="number" name="averageGroomingTime" class="form-control @error('averageGroomingTime') is-invalid @enderror" value="{{ old('averageGroomingTime') }}" id="averageGroomingTime" placeholder="Tiempo de arreglo de la raza" step="1" min="0">
-            @error('averageGroomingTime')
-              <div class="invalid-feedback">
-                  {{ $message }}
-              </div>
-            @enderror
-          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>

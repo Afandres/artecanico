@@ -9,6 +9,7 @@ class Client extends Model
     protected $fillable = [
         'name',
         'emergency_phone',
+        'access_code'    
     ];
 
     public function pets()

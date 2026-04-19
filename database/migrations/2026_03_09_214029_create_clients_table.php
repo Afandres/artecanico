@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('emergency_phone', 10);
+            $table->string('access_code', 6)->unique()->nullable();
             $table->timestamps();
         });
     }

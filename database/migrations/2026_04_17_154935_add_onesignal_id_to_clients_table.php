@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pet_history', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('appointment_id')->constrained()->onDelete('cascade');
-            $table->string('description')->nullable();
-            $table->string('photo')->nullable();
-            $table->timestamps();
+        Schema::table('clients', function (Blueprint $table) {
+            //
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pet_history');
+        Schema::table('clients', function (Blueprint $table) {
+            //
+        });
     }
 };

@@ -17,6 +17,6 @@ class Treatment extends Model
 
     public function appointments()
     {
-        return $this->hasMany(Appointment::class);
+        return $this->belongsToMany(Appointment::class, 'appointments_treatments');
     }
 }

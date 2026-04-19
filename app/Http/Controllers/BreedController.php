@@ -18,14 +18,11 @@ class BreedController extends Controller
         $rules = [
             'name' => 'required',
             'size' => 'required',
-            'averageGroomingTime' => 'required|integer'
         ];
 
         $messages = [
             'name.required' => 'El nombre es obligatorio',
             'size.required' => 'El tamaño es requerido',
-            'averageGroomingTime.required' => 'El tiempo de arreglo es requerido',
-            'averageGroomingTime.integer' => 'El tiempo de arreglo debe ser un número'
         ];
 
         $validatedData = $request->validate($rules, $messages);
@@ -37,7 +34,6 @@ class BreedController extends Controller
             $breed->name = $validatedData['name'];
             $breed->size = $validatedData['size'];
             $breed->description = $request->input('description');
-            $breed->average_grooming_time = $validatedData['averageGroomingTime'];
             $breed->save();
 
             DB::commit();
@@ -54,14 +50,11 @@ class BreedController extends Controller
         $rules = [
             'name' => 'required',
             'size' => 'required',
-            'averageGroomingTime' => 'required|integer'
         ];
 
         $messages = [
             'name.required' => 'El nombre es obligatorio',
             'size.required' => 'El tamaño es requerido',
-            'averageGroomingTime.required' => 'El tiempo de arreglo es requerido',
-            'averageGroomingTime.integer' => 'El tiempo de arreglo debe ser un número'
         ];
 
         $validatedData = $request->validate($rules, $messages);
@@ -73,7 +66,6 @@ class BreedController extends Controller
             $breed->name = $validatedData['name'];
             $breed->size = $validatedData['size'];
             $breed->description = $request->input('description');
-            $breed->average_grooming_time = $validatedData['averageGroomingTime'];
             $breed->save();
 
             DB::commit();
