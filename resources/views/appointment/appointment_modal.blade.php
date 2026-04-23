@@ -10,12 +10,16 @@
                 @csrf
                 <div class="modal-body">
                     <input type="hidden" name="appointment_id" id="appointment_id">
-                    <input type="hidden" name="client_code" id="client_code_hidden">
+                    @if (!auth()->check())
+                    <input type="hidden" name="client_code" id="client_code_hidden" value="{{ $code }}">
+                    @endif   
                     <div class="mb-3 d-flex align-items-center gap-4">  
                         <img id="event_pet_photo" style="height: 150px; width: 150px; display: none; border-radius: 50%; object-fit: cover;">
                         <div id="pet_info" style="flex: 1; background: #f8f9fa; padding: 10px; border-radius: 10px;">
                             <div><strong id="event_title"></strong></div>
+                            @auth
                             <div><small id="event_client"></small> - <small id="event_phone"></small></div>
+                            @endauth
                             <div><small id="event_breed"></small></div>
                             <div><small id="event_age"></small></div>
                             <div><small id="event_gender"></small></div>
@@ -31,10 +35,6 @@
                         <small class="mt-2 d-block fw-bold" id="event_status"></small>
                     </div>
                     <div id="extra_fields" style="display: none;">
-                         <div class="mb-3">
-                            <label for="price" class="form-lavbe">Precio</label>
-                            <input type="number" name="price" id="price" class="form-control">
-                        </div>                   
                         <div class="mb-3">
                             <label for="treatment_id" class="form-label">Tratamientos</label>
                             <select name="treatment_id" id="treatment_id" class="form-control">
@@ -44,14 +44,18 @@
                                 @endforeach
                             </select>
                         </div>
+                         <div class="mb-3">
+                            <label for="price" class="form-lavbe">Precio</label>
+                            <input type="number" name="price" id="price" class="form-control">
+                        </div>                   
+                        
                        <div class="mb-3">
                             <label for="observations" class="form-label">Observaciones</label>
                             <textarea name="observations" id="observations" class="form-control"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="photo" class="form-label">
-                                <input type="file" name="photo" id="photo" class="form-control">
-                            </label>
+                            <label for="photo" class="form-label">Foto</label>
+                            <input type="file" name="photo" id="photo" class="form-control">
                         </div>
                     </div>
                     <div class="mb-3">

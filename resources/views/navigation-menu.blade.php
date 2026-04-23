@@ -39,11 +39,14 @@
                     @endauth
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('appointment.index') }}" :active="request()->routeIs('appointment.index')">
+                    @php
+                        $code = request()->route('code');
+                    @endphp
+                    <x-nav-link href="{{ auth()->check() ? route('appointment.index') : route('appointment.client.index', ['code' => $code]) }}" :active="request()->routeIs('appointment.index') || request()->routeIs('appointment.client.index')">
                         Citas
                     </x-nav-link>
 
-                    <x-nav-link href="{{ route('pet.index') }}" :active="request()->routeIs('pet.index')">
+                    <x-nav-link href="{{ auth()->check() ? route('pet.index') : route('pet.client.index', ['code' => $code]) }}" :active="request()->routeIs('pet.index') || request()->routeIs('pet.client.index')">
                         Mascotas
                     </x-nav-link>
                 </div>

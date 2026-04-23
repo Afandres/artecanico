@@ -9,12 +9,16 @@
       <form action="{{ route('treatment.delete', ['id' => $treatment->id]) }}" method="post">
         @csrf
         @method('DELETE')  
-        <div class="modal-body">
-          ¿Quieres eliminar el tratamiento {{ $treatment->name }}? Esta acción no se puede deshacer.
+        <div class="modal-body text-center">
+          <i class="fa-solid fa-triangle-exclamation text-danger fs-1 mb-3"></i>
+          <p>¿Quieres eliminar el tratamiento <strong> {{ $treatment->name }}</strong>?</p>
+          <small class="text-danger">
+              Esta acción no se puede deshacer.
+          </small>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-          <button type="submit" class="btn btn-primary">Eliminar</button>
+          <button type="submit" class="btn btn-success">Confirmar</button>
         </div>
       </form>
     </div>

@@ -21,8 +21,28 @@ class PetController extends Controller
         ->select('pets.*')
         ->get();
 
+        $breeds = Breed::get();
 
-        return view('pets.index', ['pets' => $pets]);
+        return view('pets.index', [
+            'pets' => $pets,
+            'breeds' => $breeds
+        ]);
+    }
+
+    public function client($code = null)
+    {
+        $client_id = Client::where('access_code', $code)->pluck('id');
+        $pets = Pet::with(['client', 'breed'])
+        ->where('client_id', $client_id)
+        ->get();
+
+        $breeds = Breed::get();
+
+        return view('pets.index', [
+            'pets' => $pets,
+            'breeds' => $breeds,
+            'code' => $code
+        ]);
     }
 
     public function getBreeds(Request $request)
@@ -49,9 +69,9 @@ class PetController extends Controller
 
     private function generateCode()
     {
-        do{
-            $code = random_int(100000,999999);
-        }while(Client::where('access_code',$code)->exists());
+        do {
+            $code = Str::upper(Str::random(10));
+        } while (Client::where('access_code', $code)->exists());
 
         return $code;
     }
@@ -159,11 +179,126 @@ class PetController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            dd($e);
             DB::rollback();
             return response()->json([
                 'message' => 'Error al crear la mascota'
             ], 500);
+        }
+    }
+
+    public function update(Request $request){
+        $rules = [
+            'name' => 'required',
+            'breed_id' => 'required',
+            'sobriquet' => 'required',
+        ];
+
+        $messages = [
+            'name.required' => 'El nombre de la mascota es obligatorio',
+            'breed_id.required' => 'La raza es obligatoria',
+            'sobriquet.required' => 'El apodo de la mascota es requerido',
+        ];
+
+        $validatedData = $request->validate($rules, $messages);
+
+        try {
+            DB::beginTransaction();
+
+            $pet = Pet::findOrFail($request->input('id'));
+            $pet->name = $validatedData['name'];
+            $pet->sobriquet = $validatedData['sobriquet'];
+            $pet->breed_id = $validatedData['breed_id'];
+            $pet->age = $request->input('age');
+            $pet->gender = $request->input('gender');
+            $pet->medical_condition = $request->input('medical_condition');
+            $pet->observations = $request->input('observations');
+            if ($request->hasFile('profile_photo')) {
+
+                if ($pet->profile_photo && Storage::disk('public')->exists($pet->profile_photo)) {
+                    Storage::disk('public')->delete($pet->profile_photo);
+                }
+
+                $path = $request->file('profile_photo')->store('pets', 'public');
+
+                $pet->profile_photo = $path;
+            }
+
+            $pet->save();
+
+            DB::commit();
+
+            return redirect()->route('pet.index')->with('success', 'Mascota editada exitosamente');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', 'Error al editar la mascota');
+        }
+    }
+
+    public function delete($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $pet = Pet::findOrFail($id);
+            $pet->delete();
+
+            DB::commit();
+
+            return redirect()->route('pet.index')->with('success', 'Mascota eliminada exitosamente');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', 'Error al eliminar la mascota');
+        }
+    }
+
+    public function update_client(Request $request){
+        $rules = [
+            'name' => 'required',
+            'emergency_phone' => 'required',
+        ];
+
+        $messages = [
+            'name.required' => 'El nombre del cliente es obligatorio',
+            'emergency_phone.required' => 'El numero de celular del cliente es requerido',
+        ];
+
+        $validatedData = $request->validate($rules, $messages);
+
+        try {
+            DB::beginTransaction();
+
+            $client = Client::findOrFail($request->input('id'));
+            $client->name = $validatedData['name'];
+            $client->emergency_phone = $validatedData['emergency_phone'];
+            $client->save();
+
+            DB::commit();
+
+            return redirect()->route('pet.index')->with('success', 'Cliente editado exitosamente');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', 'Error al editar al cliente');
+        }
+    }
+
+    public function delete_client($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $client = Client::findOrFail($id);
+            $client->delete();
+
+            DB::commit();
+
+            return redirect()->route('pet.index')->with('success', 'Cliente eliminado exitosamente');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', 'Error al eliminar al cliente');
         }
     }
 }

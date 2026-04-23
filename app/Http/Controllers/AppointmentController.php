@@ -13,14 +13,20 @@ use App\Models\Client;
 
 class AppointmentController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $token = $request->query('token');
-
         $treatments = Treatment::get();
         return view('appointment.index', [
             'treatments' => $treatments,
-            'token' => $token
+        ]);
+    }
+
+    public function client($code = null)
+    {
+        $treatments = Treatment::get();
+        return view('appointment.index', [
+            'treatments' => $treatments,
+            'code' => $code
         ]);
     }
 
@@ -91,6 +97,18 @@ class AppointmentController extends Controller
                 'Y-m-d H:i',
                 $request->appointment_date . ' ' . $validatedData['time']
             );
+
+            $exists = Appointment::where('pet_id', $validatedData['pet_id'])
+            ->whereDate('appointment_date', $request->appointment_date)
+            ->whereIn('status', ['Pendiente', 'En proceso'])
+            ->exists();
+            $pet = Pet::find($validatedData['pet_id']);
+
+            if ($exists) {
+                DB::rollBack();
+
+                return back()->with('error', $pet->name .' ya tiene una cita agendada para hoy.');
+            }
             
             $appointment = new Appointment();
             $appointment->user_id = $request->input('user_id');
@@ -103,6 +121,7 @@ class AppointmentController extends Controller
             return redirect()->route('appointment.index')->with('success', 'Cita registrada',);
 
         } catch (\Exception $e) {
+            
             DB::rollback();
             return redirect()->back()->with('error', 'Error al registrar la cita');
         }
@@ -146,6 +165,7 @@ class AppointmentController extends Controller
                     'breed' => $appointment->pet->breed->name ?? '',
                     'photo' => $appointment->pet->profile_photo ? asset('storage/' . $appointment->pet->profile_photo) : null,
                     'age' => $appointment->pet->age,
+                    'gender' => $appointment->pet->gender,
                     'medical_condition' => $appointment->pet->medical_condition,
                     'observations' => $appointment->pet->observations,
                     'status' => $appointment->status,
@@ -210,18 +230,19 @@ class AppointmentController extends Controller
                 'phone' => $appointment->pet->client->emergency_phone,
                 'pet' => $appointment->pet->name,
                 'sobriquet' => $appointment->pet->sobriquet,
-                'status' => $appointment->status
+                'status' => $appointment->status,
+                'gender' => $appointment->pet->gender
             ];
             return redirect()->route('appointment.index')->with($dates);
 
         }catch(\Exception $e){
             DB::rollback();
-            return redirect()->back()->with('error', 'Error al registrar la cita');
+            return redirect()->back()->with('error', 'Error al cambiar estado de la cita');
         }
     }
 
     public function cancel(Request $request)
-    {
+    {   
         $request->validate([
             'appointment_id' => 'required',
             'client_code' => 'required'
@@ -240,7 +261,18 @@ class AppointmentController extends Controller
         $appointment->status = 'Cancelada';
         $appointment->save();
 
-        return redirect()->route('appointment.index')
+        // ADMIN logueado
+        if (auth()->check()) {
+            return redirect()
+                ->route('appointment.index')
+                ->with('success', 'Cita cancelada exitosamente');
+        }
+
+        // CLIENTE no logueado
+        $code = $request->client_code; // hidden input
+
+        return redirect()
+            ->route('appointment.client.index', ['code' => $code])
             ->with('success', 'Cita cancelada exitosamente');
     }
 
@@ -286,7 +318,7 @@ class AppointmentController extends Controller
                 'start' => $appointment->appointment_date,
                 'color' => $color,
                 'extendedProps' => [
-                    'photo' => $appointment->pet->profile_photo,
+                    'photo' => $appointment->pet->profile_photo ? asset('storage/' . $appointment->pet->profile_photo) : null,
                     'client' => $appointment->pet->client->name,
                     'phone' => $appointment->pet->client->emergency_phone,
                     'breed' => $appointment->pet->breed->name,

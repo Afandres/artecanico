@@ -10,17 +10,28 @@ new DataTable('#treatments', {
     scrollX: true,
 });
 
-new DataTable('#pets', {
-    responsive: true,
-    scrollX: true,
+const petsTable = document.getElementById('pets');
 
-    order: [[0, 'asc']], // ordenar por dueño
+if (petsTable) {
 
-    columnDefs: [
-        { targets: 0, visible: false } // ocultar columna dueño repetida
-    ],
+    let isAuth = petsTable.dataset.auth;
 
-    rowGroup: {
-        dataSrc: 0
+    if (isAuth == 1) {
+        new DataTable('#pets', {
+            responsive: true,
+            scrollX: true,
+            order: [[0, 'asc']],
+            columnDefs: [
+                { targets: 0, visible: false }
+            ],
+            rowGroup: {
+                dataSrc: 0
+            }
+        });
+    } else {
+        new DataTable('#pets', {
+            responsive: true,
+            scrollX: true
+        });
     }
-});
+}

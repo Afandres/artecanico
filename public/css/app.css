@@ -1,0 +1,110 @@
+
+/* =====================================
+   FUENTE GENERAL
+===================================== */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+
+body{
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(180deg,#fffaf7 0%, #fff 100%);
+    color:#2d3748;
+}
+
+
+/* =====================================
+   HEADER / NAVBAR
+===================================== */
+header,
+nav{
+    background: linear-gradient(90deg,#ffffff,#fff5ef);
+    border-bottom:1px solid #ffe2d5;
+    box-shadow:0 4px 14px rgba(0,0,0,.04);
+}
+
+/* TITULOS */
+h1,h2,h3,h4,h5{
+    font-weight:800;
+    color:#2c3e50;
+}
+
+/* =====================================
+   BOTONES GENERALES
+===================================== */
+.btn{
+    border-radius:12px !important;
+    font-weight:700;
+    transition:.2s ease;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+/* =====================================
+   CONTENEDOR PRINCIPAL
+===================================== */
+.bg-white{
+    background:#ffffff !important;
+    border-radius:20px !important;
+    box-shadow:0 10px 35px rgba(0,0,0,.06) !important;
+    border:1px solid #fff0e8;
+}
+
+/* =====================================
+   BOTONES GENERALES
+===================================== */
+.btn{
+    border-radius:12px !important;
+    font-weight:700;
+    transition:.2s ease;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+/* BOTON PRINCIPAL */
+.btn-primary,
+.btn-success{
+    background:linear-gradient(135deg,#22d3ee ,#0891b2) !important;
+    border:none !important;
+    color:#fff !important;
+}
+.btn_success{
+    color:#fff !important;
+    background-color:#198754 !important;
+    border-color:#198754 !important;
+}
+
+/* Hover */
+.btn_success:hover{
+    color:#fff !important;
+    background-color:#157347 !important;
+    border-color:#146c43 !important;
+}
+
+.btn-primary:hover,
+.btn-success:hover{
+    box-shadow:0 8px 20px rgba(8,145,178,.30);
+}
+/* SECUNDARIO */
+.btn-secondary{
+    background:#eef6ff !important;
+    color:#2563eb !important;
+    border:none !important;
+}
+
+/* INFO */
+.btn-info{
+    background:#dff7ff !important;
+    color:#0284c7 !important;
+    border:none !important;
+}
+
+/* DANGER */
+.btn-danger{
+    background:#ffe3e3 !important;
+    color:#dc2626 !important;
+    border:none !important;
+}

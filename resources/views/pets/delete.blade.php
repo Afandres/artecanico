@@ -1,20 +1,22 @@
 <!-- Modal Delete -->
-<div class="modal fade" id="breedDeleteModal{{ $breed->id }}" tabindex="-1" aria-labelledby="breedDeleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="petDeleteModal{{ $pet->id }}" tabindex="-1" aria-labelledby="breedDeleteModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="breedDeleteModalLabel">Eliminar Raza</h1>
+        <h1 class="modal-title fs-5" id="petDeleteModalLabel">Eliminar Mascota</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="{{ route('breed.delete', ['id' => $breed->id]) }}" method="post">
+      <form action="{{ route('pet.delete', ['id' => $pet->id]) }}" method="post">
         @csrf
         @method('DELETE')  
         <div class="modal-body text-center">
-          <i class="fa-solid fa-triangle-exclamation text-danger fs-1 mb-3"></i>
-          <p>¿Quieres eliminar la raza <strong> {{ $breed->name }}</strong>?</p>
-          <small class="text-danger">
-              Tambien se eliminaran todas las mascotas de esta raza.
-          </small>
+            <i class="fa-solid fa-triangle-exclamation text-danger fs-1 mb-3"></i>
+
+            <p>¿Quieres eliminar a <strong>{{ $pet->name }} - {{ $pet->sobriquet }}</strong>?</p>
+
+            <small class="text-danger">
+                Esta acción no se puede deshacer.
+            </small>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
