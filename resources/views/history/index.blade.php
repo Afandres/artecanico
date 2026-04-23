@@ -111,7 +111,7 @@
                     $('#pet_name_display').text(data.name);
                     $('#pet_breed_display').text(data.breed);
                     $('#pet_age_display').text(data.age ? data.age + ' años' :
-                    'Edad no registrada');
+                        'Edad no registrada');
                     $('#pet_gender_display').text(data.gender);
                     $('#client_name_display').text(data.client_name);
                     $('#client_phone_display').text(data.client_phone);
@@ -157,52 +157,103 @@
 
                 const hasCheckin = app.checkin_time;
                 const hasCheckout = app.checkout_time;
+                const isCanceled = app.status === 'Cancelada';
 
                 const card = `
-                    <div class="card mb-3 appointment-card" data-appointment-id="${app.id}">
-                        <div class="card-header bg-${statusClass} text-white d-flex justify-content-between align-items-center">
-                            <span>
-                                <i class="fa-regular fa-calendar"></i> ${app.date} - ${app.time}
-                            </span>
-                            <span class="badge bg-light text-dark">
-                                ${app.status}
-                            </span>
+            <div class="card mb-3 appointment-card" data-appointment-id="${app.id}">
+                <div class="card-header bg-${statusClass} text-white d-flex justify-content-between align-items-center">
+                    <span>
+                        <i class="fa-regular fa-calendar"></i> ${app.date} - ${app.time}
+                    </span>
+                    <span class="badge bg-light text-dark">
+                        ${app.status}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Precio:</strong> ${app.price ? '$' + app.price : 'Pendiente'}
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <strong>Precio:</strong> ${app.price ? '$' + app.price : 'Pendiente'}
-                                </div>
-                                <div class="col-md-8">
-                                    <strong>Tratamientos:</strong><br>
-                                    ${app.treatments.map(t => `<span class="badge bg-info me-1">${t.name}</span>`).join('') || 'Ninguno'}
-                                </div>
-                            </div>
-                            ${app.observations ? `<div class="mt-2"><strong>Observaciones generales:</strong><br><small>${app.observations}</small></div>` : ''}
-                        </div>
-                        <div class="card-footer text-end">
-                            <button class="btn btn-sm btn-info" onclick="viewAppointmentDetail(${app.id})">
-                                <i class="fa-regular fa-eye"></i> Ver detalle
-                            </button>
-                            ${!hasCheckin && app.status !== 'Cancelada' && app.status !== 'Completada' ? 
-                                `<button class="btn btn-sm btn-warning" onclick="openCheckinModal(${app.id})">
-                                    <i class="fa-solid fa-sign-in-alt"></i> Registrar llegada
-                                </button>` : ''}
-                            ${hasCheckin && !hasCheckout && app.status !== 'Cancelada' ? 
-                                `<button class="btn btn-sm btn-primary" onclick="openProcessModal(${app.id})">
-                                    <i class="fa-solid fa-camera"></i> Foto proceso
-                                </button>` : ''}
-                            ${hasCheckin && !hasCheckout && app.status !== 'Cancelada' ? 
-                                `<button class="btn btn-sm btn-success" onclick="openCheckoutModal(${app.id})">
-                                    <i class="fa-solid fa-sign-out-alt"></i> Completar servicio
-                                </button>` : ''}
+                        <div class="col-md-8">
+                            <strong>Tratamientos:</strong><br>
+                            ${app.treatments.map(t => `<span class="badge bg-info me-1">${t.name}</span>`).join('') || 'Ninguno'}
                         </div>
                     </div>
-                `;
+                    ${app.observations ? `<div class="mt-2"><strong>Observaciones generales:</strong><br><small>${app.observations}</small></div>` : ''}
+                </div>
+                <div class="card-footer text-end">
+                    <button class="btn btn-sm btn-info" onclick="viewAppointmentDetail(${app.id})">
+                        <i class="fa-regular fa-eye"></i> Ver detalle
+                    </button>
+                    ${!hasCheckin && app.status !== 'Cancelada' && app.status !== 'Completada' ? 
+                        `<button class="btn btn-sm btn-warning" onclick="openCheckinModal(${app.id})">
+                            <i class="fa-solid fa-sign-in-alt"></i> Registrar llegada
+                        </button>` : ''}
+                    ${hasCheckin && !hasCheckout && app.status !== 'Cancelada' ? 
+                        `<button class="btn btn-sm btn-primary" onclick="openProcessModal(${app.id})">
+                            <i class="fa-solid fa-camera"></i> Foto proceso
+                        </button>` : ''}
+                    ${hasCheckin && !hasCheckout && app.status !== 'Cancelada' ? 
+                        `<button class="btn btn-sm btn-success" onclick="openCheckoutModal(${app.id})">
+                            <i class="fa-solid fa-sign-out-alt"></i> Completar servicio
+                        </button>` : ''}
+                    ${!isCanceled && app.status !== 'Completada' ? 
+                        `<button class="btn btn-sm btn-danger" onclick="cancelAppointment(${app.id})">
+                            <i class="fa-solid fa-ban"></i> Cancelar cita
+                        </button>` : ''}
+                </div>
+            </div>
+        `;
                 container.append(card);
             });
         };
     });
+
+    function cancelAppointment(appointmentId) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Esta acción cancelará la cita. No podrás revertirla.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, cancelar cita',
+            cancelButtonText: 'No, mantener'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Cancelando...',
+                    text: 'Por favor espere',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                $.ajax({
+                    url: '{{ route('appointment.cancel.appointment') }}',
+                    type: 'POST',
+                    data: {
+                        appointment_id: appointmentId,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        Swal.fire('Cancelada', response.message, 'success');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
+                    },
+                    error: function(xhr) {
+                        let errorMsg = 'No se pudo cancelar la cita';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        }
+                        Swal.fire('Error', errorMsg, 'error');
+                    }
+                });
+            }
+        });
+    }
 
     // Funciones globales para los modales
     function viewAppointmentDetail(appointmentId) {
@@ -264,7 +315,7 @@
                 if (currentPetId) {
                     $('#appointmentsList').html(
                         '<div class="text-center"><i class="fa-solid fa-spinner fa-spin"></i> Actualizando...</div>'
-                        );
+                    );
                     loadPetInfo(currentPetId);
                     loadPetHistory(currentPetId);
                 }
@@ -418,7 +469,7 @@
                         if (currentPetId) {
                             $('#appointmentsList').html(
                                 '<div class="text-center"><i class="fa-solid fa-spinner fa-spin"></i> Actualizando...</div>'
-                                );
+                            );
                             loadPetInfo(currentPetId);
                             loadPetHistory(currentPetId);
                         }

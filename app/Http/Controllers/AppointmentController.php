@@ -230,6 +230,39 @@ class AppointmentController extends Controller
         }
     }
 
+    public function cancelAppointment(Request $request)
+    {
+        $request->validate([
+            'appointment_id' => 'required|exists:appointments,id'
+        ]);
+
+        try {
+            DB::beginTransaction();
+            $appointment = Appointment::findOrFail($request->appointment_id);
+
+            // Validar que no se pueda cancelar si ya está completada
+            if ($appointment->status === 'Completada') {
+                throw new \Exception('No se puede cancelar una cita que ya está completada');
+            }
+
+            $appointment->status = 'Cancelada';
+            $appointment->save();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cita cancelada exitosamente'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 422);
+        }
+    }
+
     public function fullDays()
     {
         $days = Appointment::selectRaw('DATE(appointment_date) as date, COUNT(*) as total')

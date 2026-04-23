@@ -47,6 +47,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
             Route::get('/appointments/pets/search', 'search')->name('appointment.pet.search');
             Route::post('/appointments/store', 'store')->name('appointment.store');
             Route::post('/appointments/state', 'state')->name('appointment.state');
+            Route::post('/appointments/cancel-appointment', 'cancelAppointment')->name('appointment.cancel.appointment');
         });
 
         Route::controller(PetController::class)->group(function () {
@@ -67,6 +68,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::post('/history/checkin', [HistoryController::class, 'registerCheckin'])->name('history.checkin');
         Route::post('/history/checkout', [HistoryController::class, 'registerCheckout'])->name('history.checkout');
         Route::post('/history/process', [HistoryController::class, 'registerProcess'])->name('history.process');
+        
 
         // Para obtener info de mascota (API)
         Route::get('/api/pets/{petId}/info', function ($petId) {
