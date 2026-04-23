@@ -47,23 +47,22 @@ class AppointmentController extends Controller
             foreach ($terms as $term) {
                 $query->where(function ($q) use ($term) {
                     $q->where('name', 'like', "%$term%")
-                    ->orWhere('sobriquet', 'like', "%$term%");
+                        ->orWhere('sobriquet', 'like', "%$term%");
                 });
             }
-
         })
-        ->get();
-       
+            ->get();
+
         $existsExact = Pet::whereRaw('LOWER(name) = ?', [strtolower($search)])->exists();
-        
+
         return response()->json([
             'results' => $pets->map(function ($pet) {
                 return [
                     'id' => $pet->id,
                     'text' => $pet->name,
                     'sobriquet' => $pet->sobriquet,
-                    'photo' => $pet->profile_photo 
-                        ? asset('storage/' . $pet->profile_photo) 
+                    'photo' => $pet->profile_photo
+                        ? asset('storage/' . $pet->profile_photo)
                         : null,
                     'age' => $pet->age,
                     'gender' => $pet->gender,
@@ -77,13 +76,13 @@ class AppointmentController extends Controller
             'existsExact' => $existsExact
         ]);
     }
-    
-    public function store (Request $request)
+
+    public function store(Request $request)
     {
         $rules = [
             'pet_id' => 'required',
             'time' => 'required',
-        ]; 
+        ];
 
         $messages = [
             'pet_id.required' => 'Debes seleccionar una mascota',
@@ -99,17 +98,17 @@ class AppointmentController extends Controller
             );
 
             $exists = Appointment::where('pet_id', $validatedData['pet_id'])
-            ->whereDate('appointment_date', $request->appointment_date)
-            ->whereIn('status', ['Pendiente', 'En proceso'])
-            ->exists();
+                ->whereDate('appointment_date', $request->appointment_date)
+                ->whereIn('status', ['Pendiente', 'En proceso'])
+                ->exists();
             $pet = Pet::find($validatedData['pet_id']);
 
             if ($exists) {
                 DB::rollBack();
 
-                return back()->with('error', $pet->name .' ya tiene una cita agendada para hoy.');
+                return back()->with('error', $pet->name . ' ya tiene una cita agendada para hoy.');
             }
-            
+
             $appointment = new Appointment();
             $appointment->user_id = $request->input('user_id');
             $appointment->pet_id = $validatedData['pet_id'];
@@ -119,9 +118,8 @@ class AppointmentController extends Controller
             DB::commit();
 
             return redirect()->route('appointment.index')->with('success', 'Cita registrada',);
-
         } catch (\Exception $e) {
-            
+
             DB::rollback();
             return redirect()->back()->with('error', 'Error al registrar la cita');
         }
@@ -139,19 +137,19 @@ class AppointmentController extends Controller
 
             switch ($appointment->status) {
                 case 'Pendiente':
-                    $color = '#ffc107'; // amarillo
+                    $color = '#ffc107';
                     break;
                 case 'En proceso':
-                    $color = '#0d6efd'; // azul
+                    $color = '#0d6efd';
                     break;
                 case 'Completada':
-                    $color = '#198754'; // verde
+                    $color = '#198754';
                     break;
                 case 'Cancelada':
-                    $color = '#dc3545'; // rojo
+                    $color = '#dc3545';
                     break;
                 default:
-                    $color = '#6c757d'; // gris
+                    $color = '#6c757d';
             }
 
             $events[] = [
@@ -169,11 +167,67 @@ class AppointmentController extends Controller
                     'medical_condition' => $appointment->pet->medical_condition,
                     'observations' => $appointment->pet->observations,
                     'status' => $appointment->status,
+                    'price' => $appointment->price,
+                    'checkin_time' => $appointment->checkin_time ? $appointment->checkin_time->format('d/m/Y g:i A') : null,
+                    'checkin_photo' => $appointment->checkin_photo ? asset('storage/' . $appointment->checkin_photo) : null,
+                    'checkin_observations' => $appointment->checkin_observations,
+                    'process_photo' => $appointment->process_photo ? asset('storage/' . $appointment->process_photo) : null,
+                    'process_observations' => $appointment->process_observations,
+                    'checkout_time' => $appointment->checkout_time ? $appointment->checkout_time->format('d/m/Y g:i A') : null,
+                    'checkout_photo' => $appointment->checkout_photo ? asset('storage/' . $appointment->checkout_photo) : null,
+                    'checkout_observations' => $appointment->checkout_observations,
+                    'treatments' => $appointment->treatments->map(function ($t) {
+                        return ['id' => $t->id, 'name' => $t->name];
+                    })
                 ]
             ];
         }
 
         return response()->json($events);
+    }
+
+    public function registerProcess(Request $request)
+    {
+        $request->validate([
+            'appointment_id' => 'required|exists:appointments,id',
+            'process_photo' => 'nullable|image|max:2048',
+            'process_observations' => 'nullable|string|max:500'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $appointment = Appointment::findOrFail($request->appointment_id);
+
+            if (!$appointment->checkin_time) {
+                throw new \Exception('Debes registrar la llegada primero');
+            }
+
+            if ($request->hasFile('process_photo')) {
+                $file = $request->file('process_photo');
+                $filename = 'process_' . time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
+                    . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('appointments/process', $filename, 'public');
+                $appointment->process_photo = $path;
+            }
+
+            $appointment->process_observations = $request->process_observations;
+            $appointment->save();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Foto del proceso registrada exitosamente',
+                'process_photo' => $appointment->process_photo ? asset('storage/' . $appointment->process_photo) : null
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 422);
+        }
     }
 
     public function fullDays()
@@ -197,15 +251,15 @@ class AppointmentController extends Controller
         return response()->json($events);
     }
 
-    public function state (Request $request)
+    public function state(Request $request)
     {
         $appointment_id = $request->appointment_id;
         $status = $request->status;
 
-        try{
+        try {
             DB::beginTransaction();
             $appointment = Appointment::findOrFail($appointment_id);
-            
+
             $appointment->status = $status;
             $appointment->observations = $request->observations;
             $appointment->price = $request->price;
@@ -214,8 +268,8 @@ class AppointmentController extends Controller
 
                 $file = $request->file('photo');
 
-                $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) 
-                            . '.' . $file->getClientOriginalExtension();
+                $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
+                    . '.' . $file->getClientOriginalExtension();
 
                 $path = $file->storeAs('appointments', $filename, 'public');
                 $appointment->photo = $path;
@@ -234,27 +288,26 @@ class AppointmentController extends Controller
                 'gender' => $appointment->pet->gender
             ];
             return redirect()->route('appointment.index')->with($dates);
-
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()->with('error', 'Error al cambiar estado de la cita');
         }
     }
 
     public function cancel(Request $request)
-    {   
+    {
         $request->validate([
             'appointment_id' => 'required',
             'client_code' => 'required'
         ]);
 
         $appointment = Appointment::where('id', $request->appointment_id)
-            ->whereHas('pet.client', function($q) use ($request){
+            ->whereHas('pet.client', function ($q) use ($request) {
                 $q->where('access_code', $request->client_code);
             })
             ->firstOrFail();
 
-        if($appointment->status != 'Pendiente'){
+        if ($appointment->status != 'Pendiente') {
             return back()->with('error', 'Solo citas pendientes pueden cancelarse');
         }
 
@@ -278,21 +331,21 @@ class AppointmentController extends Controller
 
     public function eventsByCode($code)
     {
-        $client = Client::where('access_code',$code)->first();
+        $client = Client::where('access_code', $code)->first();
 
-        if(!$client){
+        if (!$client) {
             return response()->json([]);
         }
 
         $appointments = Appointment::with('pet')
-            ->whereHas('pet', function($q) use($client){
-                $q->where('client_id',$client->id);
+            ->whereHas('pet', function ($q) use ($client) {
+                $q->where('client_id', $client->id);
             })
             ->get();
 
         $events = [];
 
-        foreach($appointments as $appointment){
+        foreach ($appointments as $appointment) {
             if (!$appointment->pet) continue;
 
             switch ($appointment->status) {
@@ -332,5 +385,112 @@ class AppointmentController extends Controller
         }
 
         return response()->json($events);
+    }
+
+    public function checkin(Request $request)
+    {
+        $request->validate([
+            'appointment_id' => 'required|exists:appointments,id',
+            'checkin_photo' => 'nullable|image|max:2048',
+            'checkin_observations' => 'nullable|string|max:500'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $appointment = Appointment::findOrFail($request->appointment_id);
+
+            if ($appointment->status === 'Cancelada') {
+                throw new \Exception('No se puede registrar entrada de una cita cancelada');
+            }
+
+            if ($appointment->checkin_time) {
+                throw new \Exception('Esta cita ya tiene registrada la entrada');
+            }
+
+            $appointment->checkin_time = now();
+            $appointment->checkin_observations = $request->checkin_observations;
+            $appointment->status = 'En proceso';
+
+            if ($request->hasFile('checkin_photo')) {
+                $file = $request->file('checkin_photo');
+                $filename = 'checkin_' . time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
+                    . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('appointments/checkin', $filename, 'public');
+                $appointment->checkin_photo = $path;
+            }
+
+            $appointment->save();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => '✅ Entrada registrada exitosamente',
+                'checkin_time' => $appointment->checkin_time->format('g:i A'),
+                'status' => $appointment->status
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function checkout(Request $request)
+    {
+        $request->validate([
+            'appointment_id' => 'required|exists:appointments,id',
+            'final_price' => 'required|numeric|min:0',
+            'checkout_observations' => 'nullable|string|max:500'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $appointment = Appointment::findOrFail($request->appointment_id);
+
+            if (!$appointment->checkin_time) {
+                throw new \Exception('No se puede registrar salida sin haber registrado la entrada');
+            }
+
+            if ($appointment->checkout_time) {
+                throw new \Exception('Esta cita ya tiene registrada la salida');
+            }
+
+            $appointment->checkout_time = now();
+            $appointment->checkout_observations = $request->checkout_observations;
+            $appointment->final_price = $request->final_price;
+            $appointment->status = 'Completada';
+
+            $appointment->save();
+
+            DB::commit();
+
+            // Calcular duración
+            $duration = $appointment->checkin_time->diffInMinutes($appointment->checkout_time);
+            $hours = floor($duration / 60);
+            $minutes = $duration % 60;
+            $durationText = $hours > 0 ? "{$hours}h {$minutes}min" : "{$minutes}min";
+
+            return response()->json([
+                'success' => true,
+                'message' => '✅ Salida registrada exitosamente',
+                'checkout_time' => $appointment->checkout_time->format('g:i A'),
+                'duration' => $durationText,
+                'final_price' => $appointment->final_price,
+                'status' => $appointment->status,
+                'pet_name' => $appointment->pet->name,
+                'client_phone' => $appointment->pet->client->emergency_phone
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 422);
+        }
     }
 }

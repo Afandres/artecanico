@@ -1,194 +1,193 @@
 <style>
-/* =====================================
+    /* =====================================
    FULLCALENDAR
 ===================================== */
-.fc{
-    padding:20px;
-}
+    .fc {
+        padding: 20px;
+    }
 
-/* toolbar */
-.fc .fc-toolbar-title{
-    font-size:34px !important;
-    font-weight:800;
-    color:#334155;
-}
+    /* toolbar */
+    .fc .fc-toolbar-title {
+        font-size: 34px !important;
+        font-weight: 800;
+        color: #334155;
+    }
 
-.fc .fc-button{
-    background:#1e293b !important;
-    border:none !important;
-    border-radius:12px !important;
-    padding:8px 16px !important;
-    font-weight:700;
-}
+    .fc .fc-button {
+        background: #1e293b !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 8px 16px !important;
+        font-weight: 700;
+    }
 
-.fc .fc-button:hover{
-    background:#334155 !important;
-}
+    .fc .fc-button:hover {
+        background: #334155 !important;
+    }
 
-/* días */
-.fc-theme-standard td,
-.fc-theme-standard th{
-    border:1px solid #f1f5f9 !important;
-}
+    /* días */
+    .fc-theme-standard td,
+    .fc-theme-standard th {
+        border: 1px solid #f1f5f9 !important;
+    }
 
-.fc-col-header-cell{
-    background:#fff7f2;
-    color:#444;
-    font-weight:800;
-    padding:12px 0;
-}
+    .fc-col-header-cell {
+        background: #fff7f2;
+        color: #444;
+        font-weight: 800;
+        padding: 12px 0;
+    }
 
-/* celdas */
-.fc-daygrid-day{
-    transition:.2s;
-    background:#fff;
-}
+    /* celdas */
+    .fc-daygrid-day {
+        transition: .2s;
+        background: #fff;
+    }
 
-.fc-daygrid-day:hover{
-    background:#fff8f3;
-}
+    .fc-daygrid-day:hover {
+        background: #fff8f3;
+    }
 
-/* número del día */
-.fc-daygrid-day-number{
-    font-weight:700;
-    color:#475569;
-    padding:8px;
-}
+    /* número del día */
+    .fc-daygrid-day-number {
+        font-weight: 700;
+        color: #475569;
+        padding: 8px;
+    }
 
-/* hoy */
-.fc-day-today{
-    background:#fff4db !important;
-}
+    /* hoy */
+    .fc-day-today {
+        background: #fff4db !important;
+    }
 
-/* =====================================
+    /* =====================================
    EVENTOS CITAS
 ===================================== */
-.fc-event{
-    border:none !important;
-    border-radius:10px !important;
-    padding:4px 8px !important;
-    font-weight:700;
-    font-size:14px;
-}
+    .fc-event {
+        border: none !important;
+        border-radius: 10px !important;
+        padding: 4px 8px !important;
+        font-weight: 700;
+        font-size: 14px;
+    }
 
-.fc-event:hover{
-    transform:scale(1.02);
-}
+    .fc-event:hover {
+        transform: scale(1.02);
+    }
 
-/* =====================================
+    /* =====================================
    DOMINGOS / BLOQUEADOS
 ===================================== */
-.domingo-bloqueado,
-.dia-pasado{
-    background:#f8fafc !important;
-    opacity:.55;
-}
+    .domingo-bloqueado,
+    .dia-pasado {
+        background: #f8fafc !important;
+        opacity: .55;
+    }
 
-/* =====================================
+    /* =====================================
    MODALES
 ===================================== */
-.modal-content{
-    border:none !important;
-    border-radius:22px !important;
-    box-shadow:0 20px 45px rgba(0,0,0,.12);
-}
-
-.modal-header{
-    border-bottom:1px solid #f5f5f5;
-    background:linear-gradient(90deg,#fff,#fff7f2);
-}
-
-.modal-title{
-    font-weight:800;
-}
-
-@media (max-width:768px){
-
-    /* espacio general */
-    .fc{
-        padding:8px !important;
+    .modal-content {
+        border: none !important;
+        border-radius: 22px !important;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, .12);
     }
 
-    /* toolbar completo */
-    .fc-header-toolbar{
-        display:flex !important;
-        flex-direction:column !important;
-        gap:10px;
-        align-items:center;
+    .modal-header {
+        border-bottom: 1px solid #f5f5f5;
+        background: linear-gradient(90deg, #fff, #fff7f2);
     }
 
-    /* bloques */
-    .fc-toolbar-chunk{
-        display:flex;
-        justify-content:center;
-        flex-wrap:wrap;
-        gap:6px;
-        width:100%;
+    .modal-title {
+        font-weight: 800;
     }
 
-    /* título */
-    .fc-toolbar-title{
-        font-size:22px !important;
-        font-weight:800;
-        text-align:center;
-        line-height:1.1;
-        margin:4px 0 !important;
+    @media (max-width:768px) {
+
+        /* espacio general */
+        .fc {
+            padding: 8px !important;
+        }
+
+        /* toolbar completo */
+        .fc-header-toolbar {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* bloques */
+        .fc-toolbar-chunk {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            width: 100%;
+        }
+
+        /* título */
+        .fc-toolbar-title {
+            font-size: 22px !important;
+            font-weight: 800;
+            text-align: center;
+            line-height: 1.1;
+            margin: 4px 0 !important;
+        }
+
+        /* botones */
+        .fc .fc-button {
+            padding: 6px 10px !important;
+            font-size: 13px !important;
+            border-radius: 10px !important;
+        }
+
+        /* columnas días */
+        .fc-col-header-cell {
+            font-size: 13px;
+            padding: 6px 0;
+        }
+
+        /* números día */
+        .fc-daygrid-day-number {
+            font-size: 14px;
+            padding: 4px;
+        }
+
+        /* eventos */
+        .fc-daygrid-event {
+            padding: 2px 4px !important;
+            min-height: 20px !important;
+            font-size: 10px !important;
+            overflow: hidden !important;
+        }
+
+        /* hora pequeña */
+        .fc-event-time {
+            font-size: 9px !important;
+            font-weight: 700;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
+        /* nombre mascota */
+        .fc-event-title {
+            font-size: 9px !important;
+            font-weight: 700 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            max-width: 100% !important;
+            display: block !important;
+        }
+
+        /* link +más */
+        .fc-daygrid-more-link {
+            font-size: 10px !important;
+            font-weight: 700;
+        }
     }
-
-    /* botones */
-    .fc .fc-button{
-        padding:6px 10px !important;
-        font-size:13px !important;
-        border-radius:10px !important;
-    }
-
-    /* columnas días */
-    .fc-col-header-cell{
-        font-size:13px;
-        padding:6px 0;
-    }
-
-    /* números día */
-    .fc-daygrid-day-number{
-        font-size:14px;
-        padding:4px;
-    }
-
-    /* eventos */
-    .fc-daygrid-event{
-        padding:2px 4px !important;
-        min-height:20px !important;
-        font-size:10px !important;
-        overflow:hidden !important;
-    }
-
-    /* hora pequeña */
-    .fc-event-time{
-        font-size:9px !important;
-        font-weight:700;
-        white-space:nowrap !important;
-        overflow:hidden !important;
-        text-overflow:ellipsis !important;
-    }
-
-    /* nombre mascota */
-    .fc-event-title{
-        font-size:9px !important;
-        font-weight:700 !important;
-        white-space:nowrap !important;
-        overflow:hidden !important;
-        text-overflow:ellipsis !important;
-        max-width:100% !important;
-        display:block !important;
-    }
-
-    /* link +más */
-    .fc-daygrid-more-link{
-        font-size:10px !important;
-        font-weight:700;
-    } 
-}
-
 </style>
 <x-app-layout>
     <x-slot name="header">
@@ -204,7 +203,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="calendar" id="calendar">
-                    
+
                 </div>
             </div>
         </div>
@@ -221,7 +220,7 @@
     let reopenScheduleModal = true;
     let fromAppointments = false;
     let routeCode = @json($code ?? null);
-    
+
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -250,23 +249,25 @@
             eventSources: [
                 // 🟢 ADMIN
                 ...(isAuth ? [{
-                    url: '{{ route("appointment.events") }}',
+                    url: '{{ route('appointment.events') }}',
                     method: 'GET'
                 }] : []),
 
                 ...(!isAuth ? [{
-                    url: '{{ route("appointment.fullDays") }}',
+                    url: '{{ route('appointment.fullDays') }}',
                     method: 'GET'
                 }] : [])
 
             ],
             eventClick: function(info) {
-
                 let event = info.event;
                 let props = event.extendedProps;
-
                 let status = props.status;
                 let photo = props.photo ? props.photo : '/storage/pets/images.png';
+
+                // Guardar datos actuales
+                currentAppointmentId = event.id;
+                currentAppointmentStatus = status;
 
                 $('#appointment_id').val(event.id);
                 $('#event_title').text(event.title);
@@ -277,67 +278,130 @@
                 $('#event_breed').text('Raza: ' + (props.breed || ''));
                 $('#event_age').text('Edad: ' + (props.age || 'No registrada'));
                 $('#event_gender').text('Género: ' + (props.gender || ''));
-                $('#event_medical_condition').text('Cond. Médica: ' + (props.medical_condition || 'No registrada'));
-                $('#event_observations').text('Observaciones: ' + (props.observations || 'No registrada'));
+                $('#event_medical_condition').text('Cond. Médica: ' + (props.medical_condition ||
+                    'No registrada'));
+                $('#event_observations').text('Observaciones: ' + (props.observations ||
+                    'No registrada'));
+
                 let progress = $('#status_progress');
 
                 if (status === 'Pendiente') {
-
-                    progress
-                        .css('width', '33%')
-                        .removeClass()
-                        .addClass('progress-bar bg-warning');
-
-                    $('#event_status').text('🟡 Pendiente');
+                    progress.css('width', '33%').removeClass().addClass('progress-bar bg-warning');
+                    $('#event_status').text('Pendiente');
                 }
 
                 if (status === 'En proceso') {
-
-                    progress
-                        .css('width', '66%')
-                        .removeClass()
-                        .addClass('progress-bar bg-primary progress-bar-striped progress-bar-animated');
-
-                    $('#event_status').text('🔵 En proceso');
+                    progress.css('width', '66%').removeClass().addClass(
+                        'progress-bar bg-primary progress-bar-striped progress-bar-animated');
+                    $('#event_status').text('En proceso');
                 }
 
                 if (status === 'Completada') {
-
-                    progress
-                        .css('width', '100%')
-                        .removeClass()
-                        .addClass('progress-bar bg-success');
-
-                    $('#event_status').text('🟢 Completada');
+                    progress.css('width', '100%').removeClass().addClass('progress-bar bg-success');
+                    $('#event_status').text('Completada');
                 }
 
                 if (status === 'Cancelada') {
-
-                    progress
-                        .css('width', '100%')
-                        .removeClass()
-                        .addClass('progress-bar bg-danger');
-
-                    $('#event_status').text('🔴 Cancelada');
+                    progress.css('width', '100%').removeClass().addClass('progress-bar bg-danger');
+                    $('#event_status').text('Cancelada');
                 }
 
-                /*
-                ====================================
-                CLIENTE
-                ====================================
-                */
+                // Mostrar timeline si hay datos
+                $('#timeline_info').show();
+
+                // Datos de llegada
+                $('#checkin_time_display').text(props.checkin_time || '---');
+                $('#checkin_obs_display').text(props.checkin_observations || '---');
+                if (props.checkin_photo) {
+                    $('#checkin_photo_preview').html(
+                        `<img src="${props.checkin_photo}" style="max-width: 100px; border-radius: 5px; margin-top: 5px;">`
+                        );
+                } else {
+                    $('#checkin_photo_preview').html('');
+                }
+
+                // Datos del proceso (necesitas agregarlos al events() en AppointmentController)
+                $('#process_obs_display').text(props.process_observations || '---');
+                if (props.process_photo) {
+                    $('#process_photo_preview').html(
+                        `<img src="${props.process_photo}" style="max-width: 100px; border-radius: 5px; margin-top: 5px;">`
+                        );
+                } else {
+                    $('#process_photo_preview').html('');
+                }
+
+                // Datos de salida
+                $('#checkout_time_display').text(props.checkout_time || '---');
+                $('#checkout_obs_display').text(props.checkout_observations || '---');
+                if (props.checkout_photo) {
+                    $('#checkout_photo_preview').html(
+                        `<img src="${props.checkout_photo}" style="max-width: 100px; border-radius: 5px; margin-top: 5px;">`
+                        );
+                } else {
+                    $('#checkout_photo_preview').html('');
+                }
+
+                // Precio y tratamientos
+                $('#final_price_display').text(props.price ? '$' + props.price : '---');
+
+                // Mostrar tratamientos
+                if (props.treatments && props.treatments.length > 0) {
+                    let treatmentsHtml = '';
+                    props.treatments.forEach(t => {
+                        treatmentsHtml +=
+                            `<span class="badge bg-info me-1">${t.name}</span>`;
+                    });
+                    $('#treatments_display').html(treatmentsHtml);
+                } else {
+                    $('#treatments_display').text('---');
+                }
+
+                // Mostrar/ocultar botones de acción para admin
+                if (isAuth) {
+                    $('#admin_actions').show();
+
+                    const hasCheckin = props.checkin_time;
+                    const hasCheckout = props.checkout_time;
+
+                    if (hasCheckin) {
+                        $('#btnCheckin').prop('disabled', true).html(
+                            '<i class="fa-regular fa-check-circle"></i> Llegada registrada');
+                    } else if (status === 'Cancelada') {
+                        $('#btnCheckin').prop('disabled', true);
+                    } else {
+                        $('#btnCheckin').prop('disabled', false).html(
+                            '<i class="fa-regular fa-sign-in-alt"></i> Registrar llegada');
+                    }
+
+                    if (hasCheckout) {
+                        $('#btnCheckout').prop('disabled', true).html(
+                            '<i class="fa-regular fa-check-circle"></i> Servicio completado');
+                        $('#btnProcess').prop('disabled', true);
+                    } else if (!hasCheckin || status === 'Cancelada') {
+                        $('#btnCheckout').prop('disabled', true);
+                        $('#btnProcess').prop('disabled', true);
+                    } else {
+                        $('#btnCheckout').prop('disabled', false).html(
+                            '<i class="fa-regular fa-sign-out-alt"></i> Completar servicio');
+                        $('#btnProcess').prop('disabled', false).html(
+                            '<i class="fa-regular fa-camera"></i> Foto proceso');
+                    }
+                } else {
+                    $('#admin_actions').hide();
+                }
+
+                // Cliente no autenticado
                 if (!isAuth) {
                     let select = $('#appointment_status');
                     select.empty();
 
-                    $('#extra_fields').hide();
                     $('#appointment_status').closest('.mb-3').show();
                     $('#saveBtn').show();
 
                     if (status === 'Pendiente') {
                         select.append(`<option>--- Seleccione ---</option>`);
-                        select.append(`<option value="Cancelada">🔴 Cancelar</option>`);
-                    }else {
+                        select.append(`<option value="Cancelada">Cancelar</option>`);
+                    } else {
                         $('#appointment_status').closest('.mb-3').hide();
                         $('#saveBtn').hide();
                     }
@@ -348,20 +412,16 @@
                     let select = $('#appointment_status');
                     select.empty();
 
-                    $('#extra_fields').hide();
-
                     if (status === 'Pendiente') {
                         select.append(`<option>--- Seleccione ---</option>`);
-                        select.append(`<option value="En proceso">🔵 En proceso</option>`);
-                        select.append(`<option value="Cancelada">🔴 Cancelar</option>`);
+                        select.append(`<option value="En proceso">En proceso</option>`);
+                        select.append(`<option value="Cancelada">Cancelar</option>`);
                     }
 
                     if (status === 'En proceso') {
-                        $('#extra_fields').show();
-
                         select.append(`<option>--- Seleccione ---</option>`);
-                        select.append(`<option value="Completada">🟢 Completada</option>`);
-                        select.append(`<option value="Cancelada">🔴 Cancelar</option>`);
+                        select.append(`<option value="Completada">Completada</option>`);
+                        select.append(`<option value="Cancelada">Cancelar</option>`);
                     }
 
                     if (status === 'Completada' || status === 'Cancelada') {
@@ -379,7 +439,7 @@
             dateClick: function(info) {
                 let fechaSeleccionada = new Date(info.dateStr + 'T00:00:00');
                 let hoy = new Date();
-                hoy.setHours(0,0,0,0);
+                hoy.setHours(0, 0, 0, 0);
 
                 if (!isAuth && fechaSeleccionada < hoy) {
                     Swal.fire({
@@ -391,7 +451,7 @@
                 }
 
                 let fecha = info.dateStr;
-                let isFull = calendar.getEvents().some(e => 
+                let isFull = calendar.getEvents().some(e =>
                     e.startStr === fecha && e.display === 'background'
                 );
 
@@ -418,12 +478,12 @@
                     scheduleModal(info);
                 } else {
                     scheduleAppointment(info);
-                } 
+                }
             },
 
             dayCellClassNames: function(arg) {
                 let hoy = new Date();
-                hoy.setHours(0,0,0,0);
+                hoy.setHours(0, 0, 0, 0);
 
                 if (!isAuth && arg.date < hoy) {
                     return ['dia-pasado'];
@@ -433,7 +493,7 @@
                     return ['domingo-bloqueado'];
                 }
             }
-            
+
         });
         calendar.render();
 
@@ -442,10 +502,10 @@
             cargarCitasCliente(routeCode, calendar);
 
         }
-        
+
     });
 
-    $(document).on('select2:select', '#client_id', function (e) {
+    $(document).on('select2:select', '#client_id', function(e) {
 
         let data = e.params.data;
 
@@ -457,7 +517,7 @@
         }
     });
 
-    $(document).on('select2:close', '#client_id', function () {
+    $(document).on('select2:close', '#client_id', function() {
 
         let select = $(this);
         let data = select.select2('data');
@@ -471,7 +531,7 @@
         }
     });
 
-    $('#schedule_appointment_Modal').on('shown.bs.modal', function () {
+    $('#schedule_appointment_Modal').on('shown.bs.modal', function() {
 
         let select = $('#pet_name');
 
@@ -486,7 +546,7 @@
             dropdownParent: $('#schedule_appointment_Modal'),
             tags: true,
             selectOnClose: true,
-            createTag: function (params) {
+            createTag: function(params) {
                 let term = $.trim(params.term);
                 if (term === '') return null;
 
@@ -502,7 +562,7 @@
                     newTag: true
                 };
             },
-            templateResult: function (data) {
+            templateResult: function(data) {
                 if (data.loading) {
                     return data.text;
                 }
@@ -527,20 +587,22 @@
                     </div>
                 `);
             },
-            templateSelection: function (data) {
-                return data.sobriquet 
-                    ? `${data.text} - ${data.sobriquet}` 
-                    : data.text;
+            templateSelection: function(data) {
+                return data.sobriquet ?
+                    `${data.text} - ${data.sobriquet}` :
+                    data.text;
             },
             ajax: {
                 url: '{{ route('appointment.pet.search') }}',
                 method: 'GET',
                 dataType: 'json',
                 delay: 250,
-                data: function (params) {
-                    return { search: params.term };
+                data: function(params) {
+                    return {
+                        search: params.term
+                    };
                 },
-                processResults: function (data) {   
+                processResults: function(data) {
                     $('#pet_name').data('existsExact', data.existsExact);
 
                     return {
@@ -552,7 +614,7 @@
 
     });
 
-    $('#pet_name').on('select2:close', function () {
+    $('#pet_name').on('select2:close', function() {
 
         let data = $(this).select2('data');
 
@@ -584,8 +646,8 @@
             }, 400);
         }
     });
-    
-    $('#petCanvas').on('hidden.bs.offcanvas', function () {
+
+    $('#petCanvas').on('hidden.bs.offcanvas', function() {
 
         if (reopenScheduleModal === true) {
 
@@ -598,7 +660,7 @@
 
     });
 
-    $('#petCanvas').on('shown.bs.offcanvas', function () {
+    $('#petCanvas').on('shown.bs.offcanvas', function() {
 
         if ($('#client_id').hasClass('select2-hidden-accessible')) {
             $('#client_id').select2('destroy');
@@ -610,10 +672,12 @@
             width: '100%',
             tags: true,
             ajax: {
-                url: '{{ route("pet.clients") }}',
+                url: '{{ route('pet.clients') }}',
                 dataType: 'json',
                 delay: 250,
-                data: params => ({ search: params.term || '' }),
+                data: params => ({
+                    search: params.term || ''
+                }),
                 processResults: data => ({
                     results: data.map(client => ({
                         id: client.id,
@@ -633,10 +697,12 @@
             dropdownParent: $('#petCanvas'),
             width: '100%',
             ajax: {
-                url: '{{ route("pet.breeds") }}',
+                url: '{{ route('pet.breeds') }}',
                 dataType: 'json',
                 delay: 250,
-                data: params => ({ search: params.term || '' }),
+                data: params => ({
+                    search: params.term || ''
+                }),
                 processResults: data => ({
                     results: data.map(breed => ({
                         id: breed.id,
@@ -648,7 +714,7 @@
 
     });
 
-    $('#schedule_appointment_Modal').on('hidden.bs.modal', function () {
+    $('#schedule_appointment_Modal').on('hidden.bs.modal', function() {
 
         let select = $('#pet_name');
 
@@ -674,7 +740,7 @@
         }
     });
 
-    $('#pet_name').on('select2:select', function (e) {
+    $('#pet_name').on('select2:select', function(e) {
         let data = e.params.data;
 
         if (data.newTag || !data.id) {
@@ -701,12 +767,12 @@
         $('#pet_info').show();
     });
 
-    $('#pet_name').on('select2:clear', function () {
+    $('#pet_name').on('select2:clear', function() {
         $('#pet_photo').hide();
         $('#pet_info').hide();
     });
 
-    $('#pet_name').on('change', function () {
+    $('#pet_name').on('change', function() {
 
         if (!$(this).hasClass('select2-hidden-accessible')) {
             return;
@@ -743,7 +809,7 @@
         }
 
         $.ajax({
-            url: '{{ route("pet.store") }}',
+            url: '{{ route('pet.store') }}',
             type: 'POST',
             data: formData,
             processData: false,
@@ -752,12 +818,13 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                if(response.new_client){
+                if (response.new_client) {
 
                     let phone = response.phone;
-                    let code  = response.access_code;
+                    let code = response.access_code;
 
-                    let mensaje =`Hola 👋 Bienvenido a Arte Canino 🐶✨ Puedes navegar en nuestra plataforma haciendo click aquí: https://takes-editors-walt-butter.trycloudflare.com/appointments/client/${code}`;
+                    let mensaje =
+                        `Hola 👋 Bienvenido a Arte Canino 🐶✨ Puedes navegar en nuestra plataforma haciendo click aquí: https://takes-editors-walt-butter.trycloudflare.com/appointments/client/${code}`;
                     let encoded = encodeURIComponent(mensaje);
 
                     // intento abrir app
@@ -796,10 +863,10 @@
 
                         // crear nueva opción seleccionada
                         let newOption = new Option(
-                            response.name,   // texto visible
-                            response.id,     // value = id mascota
-                            true,            // selected por defecto
-                            true             // marcar seleccionada
+                            response.name, // texto visible
+                            response.id, // value = id mascota
+                            true, // selected por defecto
+                            true // marcar seleccionada
                         );
 
                         // agregar al select
@@ -856,7 +923,8 @@
                     // 🔥 mostrar errores debajo de cada campo
                     for (let field in errors) {
                         let input = $('[name="' + field + '"]');
-                        input.after('<small class="text-danger error-text">' + errors[field][0] + '</small>');
+                        input.after('<small class="text-danger error-text">' + errors[field][0] +
+                            '</small>');
                     }
                 } else {
                     Swal.fire({
@@ -870,7 +938,7 @@
         });
     });
 
-    $('#pet_name').on('change', function () {
+    $('#pet_name').on('change', function() {
         let photo = $(this).find(':selected').data('photo');
 
         if (photo) {
@@ -882,7 +950,7 @@
         }
     });
 
-    $(document).on('hidden.bs.modal', '.modal', function () {
+    $(document).on('hidden.bs.modal', '.modal', function() {
 
         if ($('.modal.show').length === 0) {
             $('.modal-backdrop').remove();
@@ -898,21 +966,21 @@
 
     });
 
-    function cargarCitasCliente(code, calendar){
+    function cargarCitasCliente(code, calendar) {
 
         if (!code) return;
 
         calendar.getEventSources().forEach(source => source.remove());
 
         calendar.addEventSource({
-            url: '{{ route("appointment.fullDays") }}',
+            url: '{{ route('appointment.fullDays') }}',
             method: 'GET'
         });
 
         calendar.addEventSource({
             url: '/appointments/client-events/' + code,
             method: 'GET',
-            failure: function () {
+            failure: function() {
                 Swal.fire('Código inválido o sin citas');
             }
         });
@@ -940,12 +1008,12 @@
         }
     }
 
-    function scheduleModal(info){
+    function scheduleModal(info) {
         var modal = new bootstrap.Modal(document.getElementById('scheduleModal'));
         modal.show();
-        
+
         let date = new Date(info.dateStr + 'T00:00:00');
-        
+
         let formatedDate = date.toLocaleDateString('es-CO', {
             weekday: 'long',
             day: 'numeric',
@@ -953,11 +1021,11 @@
             year: 'numeric'
         });
         formatedDate = formatedDate.charAt(0).toUpperCase() + formatedDate.slice(1);
-        
+
         document.getElementById('appointment_date').innerText = formatedDate;
     }
 
-   function scheduleAppointment(info){
+    function scheduleAppointment(info) {
 
         let el = document.getElementById('schedule_appointment_Modal');
 
@@ -976,9 +1044,9 @@
         });
 
         // crear nueva instancia limpia
-        let modal = new bootstrap.Modal(el,{
-            backdrop:true,
-            keyboard:true
+        let modal = new bootstrap.Modal(el, {
+            backdrop: true,
+            keyboard: true
         });
 
         modal.show();
@@ -988,10 +1056,10 @@
         let date = new Date(info.dateStr + 'T00:00:00');
 
         let formatedDate = date.toLocaleDateString('es-CO', {
-            weekday:'long',
-            day:'numeric',
-            month:'long',
-            year:'numeric'
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
         });
 
         formatedDate =
@@ -1012,9 +1080,9 @@
 
         window.open(url, '_blank');
     }
-</script> 
+</script>
 
-@if(session('success'))
+@if (session('success'))
     <script>
         Swal.fire({
             title: "{{ session('success') }}",
@@ -1035,10 +1103,11 @@
 
         if (status === 'Completada') {
 
-            let pet =  @json(session('pet'));
+            let pet = @json(session('pet'));
             let phone = @json(session('phone'));
 
-            let mensaje = "Hola 👋 Te informamos que " + pet + " ya está " + estadoTexto +" 🐶✨. Gracias por confiar en nosotros ☺️";
+            let mensaje = "Hola 👋 Te informamos que " + pet + " ya está " + estadoTexto +
+                " 🐶✨. Gracias por confiar en nosotros ☺️";
 
             let encoded = encodeURIComponent(mensaje);
 

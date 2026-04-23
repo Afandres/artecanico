@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('appointments', function (Blueprint $table) {
@@ -17,16 +14,26 @@ return new class extends Migration
             $table->foreignId('pet_id')->constrained()->onDelete('cascade');
             $table->dateTime('appointment_date');   
             $table->enum('status', ['Pendiente', 'En proceso', 'Completada', 'Cancelada'])->default('Pendiente');
-            $table->string('observations')->nullable();
-            $table->integer('price')->nullable();
-            $table->string('photo')->nullable();
+            $table->text('observations')->nullable();
+            $table->decimal('price', 10, 2)->nullable(); // Usaremos este campo para el precio final
+            $table->string('photo')->nullable(); // Foto final del servicio
+            
+            // Nuevos campos
+            $table->timestamp('checkin_time')->nullable();
+            $table->string('checkin_photo')->nullable();
+            $table->text('checkin_observations')->nullable();
+            
+            $table->string('process_photo')->nullable(); // Foto durante el proceso
+            $table->text('process_observations')->nullable(); // Observaciones durante el proceso
+            
+            $table->timestamp('checkout_time')->nullable();
+            $table->string('checkout_photo')->nullable(); // Foto de salida
+            $table->text('checkout_observations')->nullable();
+            
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('appointments');

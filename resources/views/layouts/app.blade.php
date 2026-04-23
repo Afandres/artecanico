@@ -45,7 +45,7 @@
             window.OneSignalDeferred = window.OneSignalDeferred || [];
             OneSignalDeferred.push(async function(OneSignal) {
                 await OneSignal.init({
-                    appId: "042943ee-2cfe-4fa4-86b2-667499b93bf4",
+                    appId: "0bea3e47-b054-4dd4-a757-a0ae5bff93ca",
                 });
             });
         </script>
