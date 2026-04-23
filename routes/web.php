@@ -13,9 +13,7 @@ Route::get('/', function () {
 
 // Ruta pública para el calendario de citas (fuera del middleware auth)
 Route::controller(AppointmentController::class)->group(function () {
-    Route::get('/appointments', 'index')->name('appointment.index'); // 👈 AGREGAR ESTA LÍNEA
     Route::get('/appointments/client/{code?}', 'client')->name('appointment.client.index');
-    Route::get('/appointments/events', 'events')->name('appointment.events'); // 👈 TAMBIÉN AGREGAR ESTA
     Route::get('/appointments/full-days', 'fullDays')->name('appointment.fullDays');
     Route::get('/appointments/client-events/{code}', 'eventsByCode')->name('appointment.events.code');
     Route::post('/appointments/cancel', 'cancel')->name('appointment.cancel');
@@ -44,16 +42,22 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         });
 
         Route::controller(AppointmentController::class)->group(function () {
+            Route::get('/appointments', 'index')->name('appointment.index');
+            Route::get('/appointments/events', 'events')->name('appointment.events');
             Route::get('/appointments/pets/search', 'search')->name('appointment.pet.search');
             Route::post('/appointments/store', 'store')->name('appointment.store');
             Route::post('/appointments/state', 'state')->name('appointment.state');
         });
 
         Route::controller(PetController::class)->group(function () {
+            Route::get('/pets', 'index')->name('pet.index');
             Route::get('/pets/breeds', 'getBreeds')->name('pet.breeds');
             Route::get('/pets/clients', 'getClients')->name('pet.clients');
-            Route::get('/pets', 'index')->name('pet.index'); // 👈 También agrega esta si no existe
             Route::post('/pets/store', 'store')->name('pet.store');
+            Route::post('/pets/update', 'update')->name('pet.update');
+            Route::delete('/pets/delete/{id}', 'delete')->name('pet.delete');
+            Route::post('/pets/client/update', 'update_client')->name('client.update');
+            Route::delete('/pets/client/delete/{id}', 'delete_client')->name('client.delete');
         });
 
         // Historial
