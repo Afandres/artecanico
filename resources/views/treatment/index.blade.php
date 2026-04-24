@@ -13,7 +13,7 @@
                                 <th>Nombre</th>
                                 <th>Descripción</th>
                                 <th>
-                                    <button type="button" class="btn btn_success" data-bs-toggle="modal" data-bs-target="#treatmentAddModal">
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#treatmentAddModal">
                                         <i class="fa-solid fa-plus"></i>
                                     </button>
                                 </th>

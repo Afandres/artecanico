@@ -73,8 +73,7 @@
                             <th>
                                     @auth                                
                                     <button type="button"
-                                        id="success"
-                                        class="btn btn_success"
+                                        class="btn btn-success"
                                         onclick="fromAppointments = false"
                                         data-bs-toggle="offcanvas"
                                         data-bs-target="#petCanvas">

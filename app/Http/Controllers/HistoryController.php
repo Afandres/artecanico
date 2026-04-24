@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\Models\Appointment;
 use App\Models\Pet;
 use App\Models\Treatment;
+use App\Models\Client;
 
 class HistoryController extends Controller
 {
@@ -22,6 +23,24 @@ class HistoryController extends Controller
         $treatments = Treatment::all();
         
         return view('history.index', compact('pets', 'treatments'));
+    }
+
+    public function client($code = null)
+    {
+
+        $client_id = Client::where('access_code', $code)->pluck('id');
+        $pets = Pet::with(['client', 'breed'])
+            ->where('client_id', $client_id)
+            ->orderBy('name')
+            ->get();
+        
+        $treatments = Treatment::all();
+        
+        return view('history.index', [
+            'pets' => $pets,
+            'treatments' => $treatments,
+            'code' => $code
+        ]);
     }
     
     public function getPetHistory($petId)
@@ -38,7 +57,7 @@ class HistoryController extends Controller
                     'date' => $appointment->appointment_date->format('d/m/Y'),
                     'time' => $appointment->appointment_date->format('g:i A'),
                     'status' => $appointment->status,
-                    'price' => $appointment->price,
+                    'price' => number_format($appointment->price, 0, ',', '.'),
                     'observations' => $appointment->observations,
                     'treatments' => $appointment->treatments->map(function($t) {
                         return [
@@ -160,8 +179,7 @@ class HistoryController extends Controller
     {
         $request->validate([
             'appointment_id' => 'required|exists:appointments,id',
-            'treatment_ids' => 'required|array|min:1',
-            'treatment_ids.*' => 'exists:treatments,id',
+            'treatment_id' => 'required|min:1',
             'price' => 'required|numeric|min:0', // Usamos price en lugar de final_price
             'checkout_observations' => 'nullable|string|max:500',
             'checkout_photo' => 'nullable|image|max:2048' // Foto de salida
@@ -197,7 +215,7 @@ class HistoryController extends Controller
             $appointment->save();
             
             // Sincronizar tratamientos aplicados
-            $appointment->treatments()->sync($request->treatment_ids);
+            $appointment->treatments()->sync($request->treatment_id);
             
             DB::commit();
             
@@ -217,6 +235,7 @@ class HistoryController extends Controller
             ]);
             
         } catch (\Exception $e) {
+            dd($e);
             DB::rollback();
             return response()->json([
                 'success' => false,
@@ -229,10 +248,16 @@ class HistoryController extends Controller
     {
         $appointment = Appointment::with(['pet', 'pet.client', 'treatments'])
             ->findOrFail($id);
+
+        $name = $appointment->pet->name;
+
+        if (auth()->check() && $appointment->pet->sobriquet) {
+            $name .= ' - ' . $appointment->pet->sobriquet;
+        }
         
         return response()->json([
             'id' => $appointment->id,
-            'pet_name' => $appointment->pet->name . ($appointment->pet->sobriquet ? ' - ' . $appointment->pet->sobriquet : ''),
+            'pet_name' => $name,
             'client_name' => $appointment->pet->client->name,
             'client_phone' => $appointment->pet->client->emergency_phone,
             'appointment_date' => $appointment->appointment_date->format('d/m/Y g:i A'),

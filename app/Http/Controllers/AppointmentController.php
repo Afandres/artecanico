@@ -158,6 +158,7 @@ class AppointmentController extends Controller
                 'start' => $appointment->appointment_date,
                 'color' => $color,
                 'extendedProps' => [
+                    'pet_id' => $appointment->pet_id,
                     'client' => $appointment->pet->client->name ?? '',
                     'phone' => $appointment->pet->client->emergency_phone ?? '',
                     'breed' => $appointment->pet->breed->name ?? '',
@@ -167,7 +168,7 @@ class AppointmentController extends Controller
                     'medical_condition' => $appointment->pet->medical_condition,
                     'observations' => $appointment->pet->observations,
                     'status' => $appointment->status,
-                    'price' => $appointment->price,
+                    'price' => number_format($appointment->price, 0, ',', '.'),
                     'checkin_time' => $appointment->checkin_time ? $appointment->checkin_time->format('d/m/Y g:i A') : null,
                     'checkin_photo' => $appointment->checkin_photo ? asset('storage/' . $appointment->checkin_photo) : null,
                     'checkin_observations' => $appointment->checkin_observations,
@@ -211,6 +212,7 @@ class AppointmentController extends Controller
                 $appointment->process_photo = $path;
             }
 
+            $appointment->status = 'En proceso';
             $appointment->process_observations = $request->process_observations;
             $appointment->save();
 
@@ -404,6 +406,7 @@ class AppointmentController extends Controller
                 'start' => $appointment->appointment_date,
                 'color' => $color,
                 'extendedProps' => [
+                    'pet_id' => $appointment->pet_id,
                     'photo' => $appointment->pet->profile_photo ? asset('storage/' . $appointment->pet->profile_photo) : null,
                     'client' => $appointment->pet->client->name,
                     'phone' => $appointment->pet->client->emergency_phone,

@@ -37,38 +37,50 @@
                     </div>
                     <small class="mt-2 d-block fw-bold" id="event_status"></small>
                 </div>
-
+                <div class="mb-3">
+                    <a href="#" id="btnHistoryPet" class="btn btn-sm btn-primary timeline-more">
+                        <i class="fa-solid fa-clock-rotate-left me-1"></i>
+                        Ver detalles del historial
+                    </a>
+                </div>
                 <!-- Timeline de checkin/checkout -->
                 <div id="timeline_info" class="row mb-3" style="display: none;">
+                    <div class="mb-2"><strong>Historial</strong></div>
                     <div class="col-md-6">
                         <div class="card bg-light">
-                            <div class="card-body p-2">
-                                <small class="text-muted">Llegada</small>
-                                <div class="fw-bold" id="checkin_time_display">---</div>
-                                <div id="checkin_photo_preview" class="mt-1"></div>
-                                <small class="text-muted">Observaciones:</small>
-                                <div class="small" id="checkin_obs_display">---</div>
+                            <div class="card-body p-2"> 
+                                <div class="timeline-content">
+                                    <small class="text-muted">Llegada</small>
+                                    <div class="fw-bold" id="checkin_time_display">---</div>
+                                    <div id="checkin_photo_preview" class="mt-1"></div>
+                                    <small class="text-muted">Observaciones:</small>
+                                    <div class="small" id="checkin_obs_display">---</div>           
+                                </div>                         
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="card bg-light">
                             <div class="card-body p-2">
-                                <small class="text-muted">Proceso</small>
-                                <div id="process_photo_preview" class="mt-1"></div>
-                                <small class="text-muted">Observaciones:</small>
-                                <div class="small" id="process_obs_display">---</div>
+                                <div class="timeline-content">
+                                    <small class="text-muted">Proceso</small>
+                                    <div id="process_photo_preview" class="mt-1"></div>
+                                    <small class="text-muted">Observaciones:</small>
+                                    <div class="small" id="process_obs_display">---</div>
+                                </div>     
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6 mt-2">
                         <div class="card bg-light">
                             <div class="card-body p-2">
-                                <small class="text-muted">Salida</small>
-                                <div class="fw-bold" id="checkout_time_display">---</div>
-                                <div id="checkout_photo_preview" class="mt-1"></div>
-                                <small class="text-muted">Observaciones:</small>
-                                <div class="small" id="checkout_obs_display">---</div>
+                                <div class="timeline-content">
+                                    <small class="text-muted">Salida</small>
+                                    <div class="fw-bold" id="checkout_time_display">---</div>
+                                    <div id="checkout_photo_preview" class="mt-1"></div>
+                                    <small class="text-muted">Observaciones:</small>
+                                    <div class="small" id="checkout_obs_display">---</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -93,11 +105,11 @@
                         </button>
                         <button type="button" id="btnProcess" class="btn btn-primary"
                             onclick="window.openProcessModal()">
-                            <i class="fa-solid fa-camera"></i> Foto proceso
+                            <i class="fa-solid fa-camera"></i> Novedades del proceso
                         </button>
                         <button type="button" id="btnCheckout" class="btn btn-success"
                             onclick="window.openCheckoutModal()">
-                            <i class="fa-solid fa-sign-out-alt"></i> Completar servicio
+                            <i class="fa-solid fa-right-from-bracket"></i> Completar servicio
                         </button>
                         <button type="button" id="btnCancel" class="btn btn-danger"
                             onclick="window.cancelAppointment()">
@@ -129,10 +141,9 @@
             text: "Esta acción cancelará la cita. No podrás revertirla.",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Sí, cancelar cita',
-            cancelButtonText: 'No, mantener'
+            confirmButtonColor: '#10b981',
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
                 Swal.fire({
@@ -191,6 +202,7 @@
                 showCancelButton: true,
                 confirmButtonText: 'Registrar llegada',
                 cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#10b981',
                 allowOutsideClick: false,
                 backdrop: true,
                 didOpen: () => {
@@ -238,12 +250,41 @@
     // FOTO PROCESO
     // ============================================
     window.openProcessModal = function() {
+        let event = window.currentEventProps; // guardaremos props globalmente
+        console.log(event);
+
+        const yaExisteProceso =
+            event.process_photo ||
+            event.process_observations;
+
+        if (yaExisteProceso) {
+
+            Swal.fire({
+                title: 'Ya existe registro de proceso',
+                text: 'Si continúas, la foto y observación anterior serán reemplazadas.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, reemplazar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#10b981',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    abrirModalProceso();
+                }
+            });
+
+        } else {
+            abrirModalProceso();
+        }
+    };
+
+    function abrirModalProceso(){
         let currentModal = bootstrap.Modal.getInstance(document.getElementById('appointmentModal'));
         if (currentModal) currentModal.hide();
 
         setTimeout(() => {
             Swal.fire({
-                title: 'Foto durante el proceso',
+                title: 'Novedades durante el proceso',
                 html: `
                 <div class="text-start">
                     <div class="mb-3">
@@ -260,6 +301,7 @@
                 showCancelButton: true,
                 confirmButtonText: 'Registrar foto',
                 cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#10b981',
                 allowOutsideClick: false,
                 backdrop: true,
                 didOpen: () => {
@@ -301,7 +343,7 @@
                 }
             });
         }, 300);
-    };
+    }
 
     // ============================================
     // COMPLETAR SERVICIO
@@ -319,7 +361,8 @@
                     treatmentsHtml +=
                     '<label class="form-label">Tratamientos aplicados</label>';
                     treatmentsHtml +=
-                        '<select id="checkout_treatment_ids" class="form-control select2-checkout" multiple>';
+                        '<select id="checkout_treatment_ids" class="form-control">';
+                    treatmentsHtml += `<option value=""></option>`;
                     treatments.forEach(t => {
                         treatmentsHtml += `<option value="${t.id}">${t.name}</option>`;
                     });
@@ -331,7 +374,7 @@
                         <div class="text-start">
                             ${treatmentsHtml}
                             <div class="mb-3">
-                                <label class="form-label">Precio final</label>
+                                <label class="form-label">Precio</label>
                                 <input type="number" id="checkout_price" class="form-control" step="0.01" required>
                             </div>
                             <div class="mb-3">
@@ -349,13 +392,14 @@
                         showCancelButton: true,
                         confirmButtonText: 'Completar servicio',
                         cancelButtonText: 'Cancelar',
+                        confirmButtonColor: '#10b981',
                         allowOutsideClick: false,
                         backdrop: true,
                         didOpen: () => {
-                            $('.select2-checkout').select2({
+                            $('#checkout_treatment_ids').select2({
                                 dropdownParent: $('.swal2-container'),
                                 width: '100%',
-                                placeholder: 'Selecciona los tratamientos aplicados'
+                                placeholder: 'Selecciona el tratamiento aplicado'
                             });
 
                             setTimeout(() => {
@@ -365,55 +409,45 @@
                             }, 100);
                         },
                         preConfirm: () => {
-                            const treatmentIds = $('#checkout_treatment_ids').val();
-                            const price = document.getElementById('checkout_price')
-                                .value;
-                            const observations = document.getElementById(
-                                'checkout_obs_input').value;
-                            const photoFile = document.getElementById(
-                                'checkout_photo_input').files[0];
+                            const treatmentId = $('#checkout_treatment_ids').val();
+                            const price = $('#checkout_price').val();
+                            const observations = $('#checkout_obs_input').val();
+                            const photoFile = $('#checkout_photo_input')[0].files[0];
 
-                            if (!treatmentIds || treatmentIds.length === 0) {
-                                Swal.showValidationMessage(
-                                    'Selecciona al menos un tratamiento');
+                            if (!treatmentId) {
+                                Swal.showValidationMessage('Selecciona un tratamiento');
                                 return false;
                             }
 
                             if (!price) {
-                                Swal.showValidationMessage(
-                                    'Ingresa el precio final');
+                                Swal.showValidationMessage('Ingresa el precio final');
                                 return false;
                             }
 
                             const formData = new FormData();
                             formData.append('appointment_id', currentAppointmentId);
-
-                            treatmentIds.forEach(id => {
-                                formData.append('treatment_ids[]', id);
-                            });
-
+                            formData.append('treatment_id', treatmentId);
                             formData.append('price', price);
                             formData.append('checkout_observations', observations);
-                            if (photoFile) formData.append('checkout_photo',
-                                photoFile);
+
+                            if (photoFile) {
+                                formData.append('checkout_photo', photoFile);
+                            }
 
                             return $.ajax({
-                                    url: '{{ route('history.checkout') }}',
-                                    type: 'POST',
-                                    data: formData,
-                                    processData: false,
-                                    contentType: false,
-                                    headers: {
-                                        'X-CSRF-TOKEN': $(
-                                            'meta[name="csrf-token"]').attr(
-                                            'content')
-                                    }
-                                }).then(response => response)
-                                .catch(error => {
-                                    Swal.showValidationMessage(error
-                                        .responseJSON?.message ||
-                                        'Error al completar servicio');
-                                });
+                                url: '{{ route("history.checkout") }}',
+                                type: 'POST',
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            }).catch(error => {
+                                Swal.showValidationMessage(
+                                    error.responseJSON?.message || 'Error al completar servicio'
+                                );
+                            });
                         }
                     }).then((result) => {
                         if (result.isConfirmed && result.value?.success) {
@@ -434,13 +468,23 @@
     window.handleEventClick = function(info) {
         let event = info.event;
         let props = event.extendedProps;
+        window.currentEventProps = props;
+        console.log(info.event.extendedProps);
+        let petId = props.pet_id;
         let status = props.status;
         let photo = props.photo ? props.photo : '/storage/pets/images.png';
         let isAuth = {{ auth()->check() ? 'true' : 'false' }};
+        let code = "{{ request()->route('code') }}";
+
+        if(isAuth){
+            $('#btnHistoryPet').attr('href', '/history?pet_id=' + petId);
+        }else{
+            $('#btnHistoryPet').attr('href', '/history/client/' + code + '?pet_id=' + petId);
+        }
 
         currentAppointmentId = event.id;
         currentAppointmentStatus = status;
-
+        
         $('#appointment_id').val(event.id);
         $('#event_title').text(event.title);
         $('#event_pet_photo').attr('src', photo).show();
@@ -495,18 +539,17 @@
         // Botones de acción para admin
         if (isAuth) {
             $('#admin_actions').show();
+
             const hasCheckin = props.checkin_time;
             const hasCheckout = props.checkout_time;
             const isCanceled = status === 'Cancelada';
             const isCompleted = status === 'Completada';
 
             // Si la cita ya está cancelada o completada, deshabilitar TODO
-            if (isCanceled || isCompleted) {
-                $('#btnCheckin').prop('disabled', true);
-                $('#btnProcess').prop('disabled', true);
-                $('#btnCheckout').prop('disabled', true);
-                $('#btnCancel').prop('disabled', true).html('<i class="fa-solid fa-ban"></i> Cita cancelada');
-            } else {
+            if (isCanceled || isCompleted ) {
+                $('#admin_actions').hide();
+            } 
+            else {
                 // Configurar botón de llegada
                 if (hasCheckin) {
                     $('#btnCheckin').prop('disabled', true).html(
@@ -526,9 +569,9 @@
                     $('#btnProcess').prop('disabled', true);
                 } else {
                     $('#btnCheckout').prop('disabled', false).html(
-                        '<i class="fa-regular fa-sign-out-alt"></i> Completar servicio');
+                        '<i class="fa-solid fa-right-from-bracket"></i> Completar servicio');
                     $('#btnProcess').prop('disabled', false).html(
-                        '<i class="fa-regular fa-camera"></i> Foto proceso');
+                        '<i class="fa-regular fa-camera"></i> Novedades del proceso');
                 }
 
                 // Botón cancelar SOLO habilitado si NO está completada
@@ -573,5 +616,42 @@
 
     .swal2-backdrop {
         z-index: 1999 !important;
+    }
+    
+    #timeline_info .col-md-6{
+        display:flex;
+    }
+
+    /* tarjeta completa */
+    #timeline_info .card{
+        width:100%;
+        height:100px; /* tamaño compacto */
+        border-radius:12px;
+    }
+
+    /* cuerpo fijo */
+    #timeline_info .card-body{
+        height:100%;
+        display:flex;
+        flex-direction:column;
+        position:relative;
+        overflow:hidden;
+        padding:10px;
+    }
+
+    /* contenido interno */
+    .timeline-content{
+        flex:1;
+        overflow-y:auto;
+        overflow-x:hidden;
+        padding-right:4px;
+    }
+
+    /* imágenes pequeñas */
+    #timeline_info img{
+        max-width:90px;
+        max-height:60px;
+        object-fit:cover;
+        border-radius:6px;
     }
 </style>

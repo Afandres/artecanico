@@ -50,8 +50,8 @@
                     <x-nav-link href="{{ auth()->check() ? route('pet.index') : route('pet.client.index', ['code' => $code]) }}" :active="request()->routeIs('pet.index') || request()->routeIs('pet.client.index')">
                         Mascotas
                     </x-nav-link>
-                    <x-nav-link href="{{ route('history.index') }}" :active="request()->routeIs('history.*')">
-                        Gestion de Historial
+                    <x-nav-link href="{{ auth()->check() ? route('history.index') : route('history.client.index', ['code' => $code]) }}" :active="request()->routeIs('history.index') || request()->routeIs('history.client.index')">
+                        Historial de mascotas
                     </x-nav-link>
                 </div>
             </div>
@@ -201,12 +201,16 @@
             </div>
         @endauth
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link href="{{ route('appointment.index') }}" :active="request()->routeIs('appointment.index')">
+            <x-responsive-nav-link  href="{{ auth()->check() ? route('appointment.index') : route('appointment.client.index', ['code' => $code]) }}" :active="request()->routeIs('appointment.index') || request()->routeIs('appointment.client.index')">
                 Citas
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link href="{{ route('pet.index') }}" :active="request()->routeIs('pet.index')">
+            <x-responsive-nav-link href="{{ auth()->check() ? route('pet.index') : route('pet.client.index', ['code' => $code]) }}" :active="request()->routeIs('pet.index') || request()->routeIs('pet.client.index')">
                 Mascotas
+            </x-responsive-nav-link>
+            
+            <x-responsive-nav-link href="{{ auth()->check() ? route('history.index') : route('history.client.index', ['code' => $code]) }}" :active="request()->routeIs('history.index') || request()->routeIs('history.client.index')">
+                Historial de mascotas
             </x-responsive-nav-link>
         </div>
         <!-- Responsive Settings Options -->

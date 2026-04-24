@@ -24,6 +24,37 @@ Route::controller(PetController::class)->group(function () {
     Route::get('/pets/client/{code?}', 'client')->name('pet.client.index');
 });
 
+Route::controller(HistoryController::class)->group(function () {
+    Route::get('/history/client/{code?}', 'client')->name('history.client.index');
+    Route::get('/history/pet/{petId}', 'getPetHistory')->name('history.pet');
+    Route::get('/history/appointment/{id}', 'getAppointmentDetails')->name('history.appointment.details');
+});
+
+
+Route::get('/api/pets/{petId}/info', function ($petId) {
+    $pet = \App\Models\Pet::with(['client', 'breed'])->findOrFail($petId);
+    $name = $pet->name;
+
+    if (auth()->check() && $pet->sobriquet) {
+        $name .= ' - ' . $pet->sobriquet;
+    }
+    
+    return response()->json([
+        'name' => $name,
+        'photo' => $pet->profile_photo ? asset('storage/' . $pet->profile_photo) : null,
+        'breed' => $pet->breed->name,
+        'age' => $pet->age,
+        'gender' => $pet->gender,
+        'client_name' => $pet->client->name,
+        'client_phone' => $pet->client->emergency_phone
+    ]);
+})->name('api.pet.info');
+
+// Lista de tratamientos para selects
+Route::get('/treatments/list', function () {
+    return response()->json(\App\Models\Treatment::all());
+})->name('api.treatments.list');
+
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])
     ->group(function () {
 
@@ -62,30 +93,11 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         });
 
         // Historial
-        Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
-        Route::get('/history/pet/{petId}', [HistoryController::class, 'getPetHistory'])->name('history.pet');
-        Route::get('/history/appointment/{id}', [HistoryController::class, 'getAppointmentDetails'])->name('history.appointment.details');
-        Route::post('/history/checkin', [HistoryController::class, 'registerCheckin'])->name('history.checkin');
-        Route::post('/history/checkout', [HistoryController::class, 'registerCheckout'])->name('history.checkout');
-        Route::post('/history/process', [HistoryController::class, 'registerProcess'])->name('history.process');
+        Route::controller(HistoryController::class)->group(function () {
+            Route::get('/history', 'index')->name('history.index');
+            Route::post('/history/checkin', 'registerCheckin')->name('history.checkin');
+            Route::post('/history/checkout', 'registerCheckout')->name('history.checkout');
+            Route::post('/history/process', 'registerProcess')->name('history.process');
+        });
         
-
-        // Para obtener info de mascota (API)
-        Route::get('/api/pets/{petId}/info', function ($petId) {
-            $pet = \App\Models\Pet::with(['client', 'breed'])->findOrFail($petId);
-            return response()->json([
-                'name' => $pet->name . ($pet->sobriquet ? ' - ' . $pet->sobriquet : ''),
-                'photo' => $pet->profile_photo ? asset('storage/' . $pet->profile_photo) : null,
-                'breed' => $pet->breed->name,
-                'age' => $pet->age,
-                'gender' => $pet->gender,
-                'client_name' => $pet->client->name,
-                'client_phone' => $pet->client->emergency_phone
-            ]);
-        })->name('api.pet.info');
-
-        // Lista de tratamientos para selects
-        Route::get('/treatments/list', function () {
-            return response()->json(\App\Models\Treatment::all());
-        })->name('api.treatments.list');
     });

@@ -14,7 +14,7 @@
                                 <th>Descripción</th>
                                 <th>Tamaño</th>
                                 <th>
-                                    <button type="button" class="btn btn_success" data-bs-toggle="modal" data-bs-target="#breedAddModal">
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#breedAddModal">
                                         <i class="fa-solid fa-plus"></i>
                                     </button>
                                 </th>

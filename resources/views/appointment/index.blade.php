@@ -61,8 +61,8 @@
     }
 
     /* =====================================
-   EVENTOS CITAS
-===================================== */
+    EVENTOS CITAS
+    ===================================== */
     .fc-event {
         border: none !important;
         border-radius: 10px !important;
@@ -76,8 +76,8 @@
     }
 
     /* =====================================
-   DOMINGOS / BLOQUEADOS
-===================================== */
+    DOMINGOS / BLOQUEADOS
+    ===================================== */
     .domingo-bloqueado,
     .dia-pasado {
         background: #f8fafc !important;
@@ -85,8 +85,8 @@
     }
 
     /* =====================================
-   MODALES
-===================================== */
+    MODALES
+    ===================================== */
     .modal-content {
         border: none !important;
         border-radius: 22px !important;
@@ -101,6 +101,11 @@
     .modal-title {
         font-weight: 800;
     }
+    /* =====================================
+    TIMELINE CARDS IGUALES
+    ===================================== */
+
+    
 
     @media (max-width:768px) {
 
@@ -186,6 +191,15 @@
         .fc-daygrid-more-link {
             font-size: 10px !important;
             font-weight: 700;
+        }
+        
+        #timeline_info .card-body{
+            min-height:auto;
+        }
+
+        #timeline_info img{
+            width:80px;
+            height:80px;
         }
     }
 </style>

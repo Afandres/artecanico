@@ -1,7 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Historial de Servicios
+            @if (auth()->check())
+                Historial de Servicios
+            @else
+                Historial de mis mascotas
+            @endif
         </h2>
     </x-slot>
 
@@ -18,8 +22,12 @@
                                 <option value="">-- Seleccione una mascota --</option>
                                 @foreach ($pets as $pet)
                                     <option value="{{ $pet->id }}">
-                                        {{ $pet->name }} {{ $pet->sobriquet ? '- ' . $pet->sobriquet : '' }}
-                                        (Dueño: {{ $pet->client->name }})
+                                        {{ $pet->name }}  
+                                        @auth
+                                            {{ $pet->sobriquet ? '- ' . $pet->sobriquet : '' }}
+                                       
+                                            (Dueño: {{ $pet->client->name }})
+                                        @endauth
                                     </option>
                                 @endforeach
                             </select>
@@ -48,10 +56,12 @@
                                     <span id="pet_age_display"></span> |
                                     <span id="pet_gender_display"></span>
                                 </p>
+                                @auth
                                 <p class="mb-0">
                                     <i class="fa-solid fa-user"></i> Dueño: <span id="client_name_display"></span> |
-                                    <i class="fa-solid fa-phone"></i> <span id="client_phone_display"></span>
+                                    <i class="fa-brands fa-whatsapp"></i> <span id="client_phone_display"></span>
                                 </p>
+                                @endauth
                             </div>
                         </div>
                     </div>
@@ -157,6 +167,7 @@
 
                 const hasCheckin = app.checkin_time;
                 const hasCheckout = app.checkout_time;
+                let isAuth = {{ auth()->check() ? 'true' : 'false' }};
                 const isCanceled = app.status === 'Cancelada';
 
                 const card = `
@@ -185,17 +196,17 @@
                     <button class="btn btn-sm btn-info" onclick="viewAppointmentDetail(${app.id})">
                         <i class="fa-regular fa-eye"></i> Ver detalle
                     </button>
-                    ${!hasCheckin && app.status !== 'Cancelada' && app.status !== 'Completada' ? 
+                    ${isAuth && !hasCheckin && app.status !== 'Cancelada' && app.status !== 'Completada' ? 
                         `<button class="btn btn-sm btn-warning" onclick="openCheckinModal(${app.id})">
                             <i class="fa-solid fa-sign-in-alt"></i> Registrar llegada
                         </button>` : ''}
-                    ${hasCheckin && !hasCheckout && app.status !== 'Cancelada' ? 
+                    ${isAuth && hasCheckin && !hasCheckout && app.status !== 'Cancelada' ? 
                         `<button class="btn btn-sm btn-primary" onclick="openProcessModal(${app.id})">
-                            <i class="fa-solid fa-camera"></i> Foto proceso
+                            <i class="fa-solid fa-camera"></i> Novedades del proceso
                         </button>` : ''}
-                    ${hasCheckin && !hasCheckout && app.status !== 'Cancelada' ? 
+                    ${isAuth && hasCheckin && !hasCheckout && app.status !== 'Cancelada' ? 
                         `<button class="btn btn-sm btn-success" onclick="openCheckoutModal(${app.id})">
-                            <i class="fa-solid fa-sign-out-alt"></i> Completar servicio
+                            <i class="fa-solid fa-right-from-bracket"></i> Completar servicio
                         </button>` : ''}
                     ${!isCanceled && app.status !== 'Completada' ? 
                         `<button class="btn btn-sm btn-danger" onclick="cancelAppointment(${app.id})">
@@ -215,10 +226,9 @@
             text: "Esta acción cancelará la cita. No podrás revertirla.",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Sí, cancelar cita',
-            cancelButtonText: 'No, mantener'
+            confirmButtonColor: '#10b981',
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
                 Swal.fire({
@@ -278,7 +288,7 @@
                     <div class="mb-3">
                         <label class="form-label">Observaciones de llegada</label>
                         <textarea id="checkin_obs" class="form-control" rows="3" 
-                            placeholder="¿Cómo llegó el perro? Estado de salud, comportamiento, etc."></textarea>
+                            placeholder="¿Cómo llegó la mascota? Estado de salud, comportamiento, etc."></textarea>
                     </div>
                 </div>
             `,
@@ -324,51 +334,108 @@
     }
 
     function openProcessModal(appointmentId) {
+
+        // 1. Consultar detalle de la cita para validar si ya existe proceso
+        $.ajax({
+            url: `/history/appointment/${appointmentId}`,
+            method: 'GET',
+            success: function(data) {
+
+                const yaExisteProceso =
+                    data.process?.photo ||
+                    data.process?.observations;
+
+                // Si ya existe proceso mostrar advertencia
+                if (yaExisteProceso) {
+
+                    Swal.fire({
+                        title: 'Ya existe registro del proceso',
+                        text: 'Si continúas, la foto y observación anterior serán reemplazadas.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Sí, reemplazar',
+                        cancelButtonText: 'Cancelar',
+                        confirmButtonColor: '#10b981'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            abrirFormularioProceso(appointmentId);
+                        }
+                    });
+
+                } else {
+                    abrirFormularioProceso(appointmentId);
+                }
+
+            },
+            error: function() {
+                Swal.fire('Error', 'No se pudo validar la información de la cita', 'error');
+            }
+        });
+    }
+
+
+    // FORMULARIO REAL
+    function abrirFormularioProceso(appointmentId) {
+
         Swal.fire({
-            title: 'Foto durante el proceso',
+            title: 'Novedades durante el proceso',
             html: `
                 <div class="text-start">
                     <div class="mb-3">
                         <label class="form-label">Foto del proceso</label>
                         <input type="file" id="process_photo" class="form-control" accept="image/*" capture="environment">
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label">Observaciones del proceso</label>
-                        <textarea id="process_obs" class="form-control" rows="3" 
+                        <textarea id="process_obs" class="form-control" rows="3"
                             placeholder="¿Cómo va el proceso? Alguna novedad, etc."></textarea>
                     </div>
                 </div>
             `,
             showCancelButton: true,
-            confirmButtonText: 'Registrar foto',
+            confirmButtonText: 'Guardar proceso',
             cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#10b981',
+
             preConfirm: () => {
+
                 const photoFile = document.getElementById('process_photo').files[0];
                 const observations = document.getElementById('process_obs').value;
 
                 const formData = new FormData();
                 formData.append('appointment_id', appointmentId);
                 formData.append('process_observations', observations);
-                if (photoFile) formData.append('process_photo', photoFile);
+
+                if (photoFile) {
+                    formData.append('process_photo', photoFile);
+                }
 
                 return $.ajax({
-                        url: '{{ route('history.process') }}',
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    }).then(response => response)
-                    .catch(error => {
-                        Swal.showValidationMessage(error.responseJSON?.message ||
-                            'Error al registrar foto');
-                    });
+                    url: '{{ route("history.process") }}',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+
+                }).then(response => response)
+                .catch(error => {
+                    Swal.showValidationMessage(
+                        error.responseJSON?.message ||
+                        'Error al guardar el proceso'
+                    );
+                });
             }
+
         }).then((result) => {
+
             if (result.isConfirmed && result.value?.success) {
+
                 Swal.fire('Éxito', result.value.message, 'success');
+
                 if (currentPetId) {
                     loadPetHistory(currentPetId);
                 }
@@ -377,57 +444,91 @@
     }
 
     function openCheckoutModal(appointmentId) {
+
         $.ajax({
             url: '/treatments/list',
             method: 'GET',
+
             success: function(treatments) {
+
                 let treatmentsHtml = '<div class="mb-3">';
-                treatmentsHtml += '<label class="form-label">Tratamientos aplicados</label>';
-                treatmentsHtml +=
-                    '<select id="treatment_ids" class="form-control select2-treatments" multiple>';
+                treatmentsHtml += '<label class="form-label">Tratamiento aplicado</label>';
+                treatmentsHtml += '<select id="treatment_id" class="form-control">';
+                treatmentsHtml += '<option value=""></option>';
+
                 treatments.forEach(t => {
                     treatmentsHtml += `<option value="${t.id}">${t.name}</option>`;
                 });
+
                 treatmentsHtml += '</select></div>';
 
                 Swal.fire({
                     title: 'Completar servicio',
                     html: `
                         <div class="text-start">
+
                             ${treatmentsHtml}
+
                             <div class="mb-3">
                                 <label class="form-label">Precio final</label>
-                                <input type="number" id="price" class="form-control" step="0.01" required>
+                                <input type="number" id="price" class="form-control" step="0.01">
                             </div>
+
                             <div class="mb-3">
                                 <label class="form-label">Foto de salida</label>
                                 <input type="file" id="checkout_photo" class="form-control" accept="image/*" capture="environment">
                             </div>
+
                             <div class="mb-3">
                                 <label class="form-label">Observaciones finales</label>
-                                <textarea id="checkout_obs" class="form-control" rows="3" 
+                                <textarea id="checkout_obs" class="form-control" rows="3"
                                     placeholder="Resultado del servicio, recomendaciones, etc."></textarea>
                             </div>
+
                         </div>
                     `,
+                    width: '600px',
                     showCancelButton: true,
                     confirmButtonText: 'Completar servicio',
                     cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#10b981',
+
                     didOpen: () => {
-                        $('.select2-treatments').select2({
+
+                        $('#treatment_id').select2({
                             dropdownParent: $('.swal2-container'),
                             width: '100%',
-                            placeholder: 'Selecciona los tratamientos aplicados'
+                            placeholder: 'Selecciona el tratamiento'
                         });
-                    },
-                    preConfirm: () => {
-                        const treatmentIds = $('#treatment_ids').val();
-                        const price = document.getElementById('price').value;
-                        const observations = document.getElementById('checkout_obs').value;
-                        const photoFile = document.getElementById('checkout_photo').files[0];
 
-                        if (!treatmentIds || treatmentIds.length === 0) {
-                            Swal.showValidationMessage('Selecciona al menos un tratamiento');
+                        $('#price').on('input', function () {
+
+                            let valor = $(this).val().replace(/\D/g, ''); // solo números
+
+                            if (valor === '') {
+                                $(this).val('');
+                                return;
+                            }
+
+                            $(this).val(
+                                parseInt(valor).toLocaleString('es-CO')
+                            );
+                        });
+
+                        setTimeout(() => {
+                            $('#price').focus();
+                        }, 100);
+                    },
+
+                    preConfirm: () => {
+
+                        const treatmentId = $('#treatment_id').val();
+                        const price = $('#price').val().replace(/\./g, '');
+                        const observations = $('#checkout_obs').val();
+                        const photoFile = $('#checkout_photo')[0].files[0];
+
+                        if (!treatmentId) {
+                            Swal.showValidationMessage('Selecciona un tratamiento');
                             return false;
                         }
 
@@ -438,43 +539,51 @@
 
                         const formData = new FormData();
                         formData.append('appointment_id', appointmentId);
-
-                        treatmentIds.forEach(id => {
-                            formData.append('treatment_ids[]', id);
-                        });
-
+                        formData.append('treatment_id', treatmentId);
                         formData.append('price', price);
                         formData.append('checkout_observations', observations);
-                        if (photoFile) formData.append('checkout_photo', photoFile);
+
+                        if (photoFile) {
+                            formData.append('checkout_photo', photoFile);
+                        }
 
                         return $.ajax({
-                                url: '{{ route('history.checkout') }}',
-                                type: 'POST',
-                                data: formData,
-                                processData: false,
-                                contentType: false,
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                                        'content')
-                                }
-                            }).then(response => response)
-                            .catch(error => {
-                                Swal.showValidationMessage(error.responseJSON?.message ||
-                                    'Error al completar servicio');
-                            });
+                            url: '{{ route("history.checkout") }}',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+
+                        }).then(response => response)
+                        .catch(error => {
+                            Swal.showValidationMessage(
+                                error.responseJSON?.message ||
+                                'Error al completar servicio'
+                            );
+                        });
                     }
+
                 }).then((result) => {
+
                     if (result.isConfirmed && result.value?.success) {
+
                         Swal.fire('Éxito', result.value.message, 'success');
+
                         if (currentPetId) {
                             $('#appointmentsList').html(
                                 '<div class="text-center"><i class="fa-solid fa-spinner fa-spin"></i> Actualizando...</div>'
                             );
+
                             loadPetInfo(currentPetId);
                             loadPetHistory(currentPetId);
                         }
                     }
+
                 });
+
             }
         });
     }
@@ -491,14 +600,14 @@
         Swal.fire({
             title: `<div style="display: flex; align-items: center; gap: 10px;">
                     <i class="fa-solid fa-calendar-check" style="color: #4f46e5;"></i>
-                    <span>Detalle de cita - ${data.pet_name}</span>
+                    <span>Cita de ${data.pet_name}</span>
                 </div>`,
             html: `
             <div class="text-start" style="max-height: 500px; overflow-y: auto; padding: 5px;">
                 <!-- Información general -->
                 <div class="row g-3 mb-4">
-                    <div class="col-md-6">
-                        <div class="d-flex align-items-center gap-2 p-2 bg-light rounded">
+                    <div class="col-md-6 d-flex">
+                        <div class="d-flex align-items-center gap-2 p-2 bg-light rounded w-100 h-100">
                             <i class="fa-solid fa-calendar-day text-primary"></i>
                             <div>
                                 <small class="text-muted">Fecha</small>
@@ -506,8 +615,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="d-flex align-items-center gap-2 p-2 bg-light rounded">
+                    <div class="col-md-6 d-flex">
+                        <div class="d-flex align-items-center gap-2 p-2 bg-light rounded w-100 h-100">
                             <i class="fa-solid fa-user text-primary"></i>
                             <div>
                                 <small class="text-muted">Cliente</small>
@@ -521,8 +630,8 @@
                 <!-- Estado de la cita -->
                 <div class="mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <strong><i class="fa-solid fa-chart-line"></i> Estado de la cita</strong>
-                        <span class="badge ${data.status === 'Completada' ? 'bg-success' : data.status === 'En proceso' ? 'bg-primary' : data.status === 'Pendiente' ? 'bg-warning' : 'bg-danger'}">
+                        <strong><i class="fa-solid fa-hourglass-half text-primary me-1"></i> Estado de la cita</strong>
+                        <span class="badge ${data.status === 'Completada' ? 'bg-success' : data.status === 'En proceso' ? 'bg-primary' : data.status === 'Pendiente' ? 'bg-warning text-dark' : 'bg-danger'}">
                             ${data.status}
                         </span>
                     </div>
@@ -535,8 +644,8 @@
                 <!-- Llegada -->
                 <div class="card mb-3 border-0 shadow-sm">
                     <div class="card-header bg-warning bg-opacity-10 border-0">
-                        <i class="fa-solid fa-sign-in-alt text-warning"></i>
-                        <strong class="ms-2">Llegada del perro</strong>
+                        <i class="fa-solid fa-paw text-warning"></i>
+                        <strong class="ms-2">Llegada de la mascota</strong>
                     </div>
                     <div class="card-body">
                         ${data.checkin.time ? `
@@ -565,7 +674,7 @@
                 <!-- Durante el proceso -->
                 <div class="card mb-3 border-0 shadow-sm">
                     <div class="card-header bg-primary bg-opacity-10 border-0">
-                        <i class="fa-solid fa-camera text-primary"></i>
+                        <i class="fa-solid fa-scissors text-primary"></i>
                         <strong class="ms-2">Durante el proceso</strong>
                     </div>
                     <div class="card-body">
@@ -589,7 +698,7 @@
                 <!-- Salida y resultados -->
                 <div class="card mb-3 border-0 shadow-sm">
                     <div class="card-header bg-success bg-opacity-10 border-0">
-                        <i class="fa-solid fa-sign-out-alt text-success"></i>
+                        <i class="fa-solid fa-circle-check text-success"></i>
                         <strong class="ms-2">Salida y resultados</strong>
                     </div>
                     <div class="card-body">
@@ -626,13 +735,13 @@
             </div>
         `,
             width: '750px',
-            confirmButtonText: '<i class="fa-solid fa-check"></i> Cerrar',
-            confirmButtonColor: '#4f46e5',
+            confirmButtonText: 'Cerrar',
             showCloseButton: true,
+            buttonsStyling: false,
             customClass: {
                 popup: 'rounded-4',
                 title: 'fs-4 fw-bold',
-                confirmButton: 'px-4 py-2'
+                confirmButton: 'btn btn-secondary px-4 py-2'
             }
         });
     }
@@ -662,4 +771,20 @@
             }
         });
     };
+    $(document).ready(function () {
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const petId = urlParams.get('pet_id');
+
+        if (petId) {
+
+            $('#pet_selector').val(petId).trigger('change');
+
+            currentPetId = petId;
+
+            loadPetInfo(petId);
+            loadPetHistory(petId);
+        }
+
+    });
 </script>
