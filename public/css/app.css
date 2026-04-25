@@ -102,11 +102,15 @@ h1,h2,h3,h4,h5{
 }
 
 .btn-warning{
-    background:#fff7d6 !important;
-    color:#d97706 !important;
+    background:#facc15 !important;   /* amarillo más vivo */
+    color:#92400e !important;        /* texto más fuerte */
     border:none !important;
+    transition: all .2s ease;
 }
 
 .btn-warning:hover{
-    box-shadow:0 8px 20px rgba(217,119,6,.20);
+    background:#eab308 !important;   /* hover más intenso */
+    color:#78350f !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(217,119,6,.18);
 }

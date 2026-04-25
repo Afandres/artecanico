@@ -11,7 +11,7 @@
       @csrf
         <div class="modal-body">
           <input type="hidden" name="user_id" id="user_id" value="{{ auth()->id() }}">
-          <div class="mb-3"> 
+          <div class="mb-3" id="pet_name_container"> 
               <label for="pet_name" class="form-label">Nombre de la mascota</label>
               <select class="form-control @error('pet_name') is-invalid @enderror" id="pet_name" name="pet_id"> </select>
               @error('pet_name')
@@ -19,6 +19,24 @@
                     {{ $message }}
                 </div>
               @enderror
+          </div>
+          <div class="form-check mb-3">
+            <input type="checkbox" name="quick_pet" id="quick_pet" class="form-check-input" value="1">
+            <label for="quick_pet" class="form-check-label">Mascota sin registrar</label>
+          </div>
+          <div id="quick_fields" class="mb-3" style="display: none;">
+            <label for="pet_name_temp" class="form-label">Nombre de la mascota</label>
+            <input type="text" name="pet_name_temp" class="form-control mb-2" placeholder="Nombre mascota">
+            <label for="gender_temp" class="form-label">Género</label>
+            <select name="gender_temp" class="form-control">
+              <option value="">--- Seleccione el género de la mascota ---</option>
+              <option value="Hembra">Hembra</option>
+              <option value="Macho">Macho</option>
+            </select>
+            <label for="owner_name_temp" class="form-label">Dueño</label>
+            <input type="text" name="owner_name_temp" class="form-control mb-2" placeholder="Nombre dueño">
+            <label for="phone_temp" class="form-label">Numero de celular</label>
+            <input type="text" name="phone_temp" class="form-control" placeholder="Teléfono">
           </div>
           <div class="mb-3 d-flex align-items-center gap-4">  
               <img id="pet_photo" style="height: 150px; width: 150px; display: none; border-radius: 50%; object-fit: cover;">

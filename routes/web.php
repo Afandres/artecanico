@@ -6,6 +6,7 @@ use App\Http\Controllers\TreatmentController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\PetController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
     return redirect()->route('appointment.index');
@@ -99,5 +100,15 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
             Route::post('/history/checkout', 'registerCheckout')->name('history.checkout');
             Route::post('/history/process', 'registerProcess')->name('history.process');
         });
-        
-    });
+
+        Route::controller(ReportController::class)->group(function () {
+            Route::get('/reports/daily', 'daily')->name('report.daily');
+            Route::get('/reports/daily/ajax', 'dailyAjax')->name('report.daily.ajax');
+            Route::get('/reports/expences', 'expense')->name('report.expenses');
+            Route::post('/reports/expences/store', 'store_expense')->name('report.expenses.store');
+            Route::post('/reports/expences/update', 'update_expense')->name('report.expenses.update');
+            Route::delete('/reports/expences/delete/{id}', 'delete_expense')->name('report.expenses.delete');
+            Route::get('/reports/monthly', 'monthly')->name('report.monthly');
+            Route::get('/reportes/finance', 'finance')->name('reports.finance');
+        });
+});

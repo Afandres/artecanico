@@ -42,6 +42,33 @@
     margin:auto;
 }
 
+.premium-tooltip .tooltip-inner{
+    background: linear-gradient(135deg, #111827, #1f2937);
+    color: #fff;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.18);
+    letter-spacing: .2px;
+}
+
+.premium-tooltip.bs-tooltip-top .tooltip-arrow::before{
+    border-top-color:#1f2937 !important;
+}
+
+.premium-tooltip.bs-tooltip-bottom .tooltip-arrow::before{
+    border-bottom-color:#1f2937 !important;
+}
+
+.premium-tooltip.bs-tooltip-start .tooltip-arrow::before{
+    border-left-color:#1f2937 !important;
+}
+
+.premium-tooltip.bs-tooltip-end .tooltip-arrow::before{
+    border-right-color:#1f2937 !important;
+}
+
 </style>
 <x-app-layout>
     <x-slot name="header">
@@ -76,6 +103,8 @@
                                         class="btn btn-success"
                                         onclick="fromAppointments = false"
                                         data-bs-toggle="offcanvas"
+                                        data-bs-placement="top"
+                                        title="Agregar mascota"
                                         data-bs-target="#petCanvas">
 
                                         <i class="fa-solid fa-plus"></i>
@@ -103,6 +132,8 @@
                                     <button type="button"
                                         class="btn btn-info btn-sm"
                                         data-bs-toggle="modal"
+                                        data-bs-placement="top"
+                                        title="Editar cliente"
                                         data-bs-target="#clientUpdateModal{{ $pet->client->id }}">
                                         <i class="fa-solid fa-edit"></i>
                                     </button>
@@ -110,6 +141,8 @@
                                     <button type="button"
                                         class="btn btn-danger btn-sm"
                                         data-bs-toggle="modal"
+                                        data-bs-placement="top"
+                                        title="Eliminar cliente"
                                         data-bs-target="#clientDeleteModal{{ $pet->client->id }}">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
@@ -135,19 +168,28 @@
                         <td>{{ \Illuminate\Support\Str::limit($pet->medical_condition_nullable, 15, '...' )}}</td>
                         <td> {{ \Illuminate\Support\Str::limit($pet->observations_nullable, 15, '...') }}</td>
                         <td>
-                            @auth    
-                            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#petUpdateModal{{ $pet->id }}">
-                                <i class="fa-solid fa-edit"></i>
-                            </button>
+                            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                @auth
+                                <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#petUpdateModal{{ $pet->id }}" data-bs-placement="top" data-bs-custom-class="premium-tooltip" title="Editar mascota"> 
+                                    <i class="fa-solid fa-edit"></i>
+                                </button>
+
+                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#petDeleteModal{{ $pet->id }}" data-bs-placement="top" data-bs-custom-class="premium-tooltip" title="Eliminar mascota">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                                @endauth
+
+                                <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#petShowModal{{ $pet->id }}" data-bs-placement="top" data-bs-custom-class="premium-tooltip" title="Ver detalles">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <a href="{{ auth()->check() ? url('/history?pet_id=' . $pet->id) : url('/history/client/' . $code . '?pet_id=' . $pet->id) }}" 
+                                    class="btn btn-sm btn-primary timeline-more" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" data-bs-custom-class="premium-tooltip" title="Ver historial">
+                                    <i class="fa-solid fa-clock-rotate-left me-1"></i>
+                                </a>
+                            </div>
                             @include('pets.update')
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#petDeleteModal{{ $pet->id }}">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
                             @include('pets.delete')
-                            @endauth
-                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#petShowModal{{ $pet->id }}">
-                                <i class="fa-solid fa-eye"></i>
-                            </button>
                             @include('pets.details')
                         </td>
                     </tr>
@@ -162,6 +204,25 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+
+        new bootstrap.Tooltip(el, {
+            container: 'body',
+            placement: 'auto',
+            trigger: 'hover'
+        });
+
+    });
+
+    document.querySelectorAll('[data-bs-placement="top"]').forEach(el => {
+
+        new bootstrap.Tooltip(el, {
+            container: 'body',
+            placement: 'auto',
+            trigger: 'hover'
+        });
+
+    });
 
     // =====================================
     // ABRIR MODAL

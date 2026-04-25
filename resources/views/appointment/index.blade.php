@@ -347,6 +347,24 @@
 
     });
 
+    $('#quick_pet').change(function(){
+
+        if($(this).is(':checked')){
+            $('#pet_name').val(null).trigger('change');
+
+            // opcional: limpiar info visual mascota
+            $('#pet_photo').hide();
+            $('#pet_info').hide();
+
+            $('#quick_fields').slideDown();
+            $('#pet_name_container').hide(); // select2 normal
+        }else{
+            $('#quick_fields').slideUp();
+            $('#pet_name_container').show();
+        }
+
+    });
+
     $(document).on('select2:select', '#client_id', function(e) {
 
         let data = e.params.data;
@@ -932,47 +950,6 @@
             draggable: true,
             timer: 1500
         });
-
-        let status = "{{ session('status') }}";
-        let gender = "{{ session('gender') }}"
-        let estadoTexto = '';
-
-        if (gender === 'Hembra') {
-            estadoTexto = 'lista';
-        } else {
-            estadoTexto = 'listo';
-        }
-
-        if (status === 'Completada') {
-
-            let pet = @json(session('pet'));
-            let phone = @json(session('phone'));
-
-            let mensaje = "Hola 👋 Te informamos que " + pet + " ya está " + estadoTexto +
-                " 🐶✨. Gracias por confiar en nosotros ☺️";
-
-            let encoded = encodeURIComponent(mensaje);
-
-            // intento abrir app
-            let appUrl = `whatsapp://send?phone=57${phone}&text=${encoded}`;
-
-            // fallback web
-            let webUrl = `https://api.whatsapp.com/send?phone=57${phone}&text=${encoded}`;
-
-            // detectar Android
-            let isAndroid = /Android/i.test(navigator.userAgent);
-
-            if (isAndroid) {
-                window.location.href = appUrl;
-
-                // si no abre, fallback
-                setTimeout(() => {
-                    window.location.href = webUrl;
-                }, 1500);
-            } else {
-                window.open(webUrl, '_blank');
-            }
-        }
     </script>
 @elseif (session('error'))
     <script>

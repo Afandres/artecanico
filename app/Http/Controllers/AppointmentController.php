@@ -80,12 +80,11 @@ class AppointmentController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'pet_id' => 'required',
+            'pet_id' => 'nullable',
             'time' => 'required',
         ];
 
         $messages = [
-            'pet_id.required' => 'Debes seleccionar una mascota',
             'time.required' => 'Debes registrar una hora para la cita'
         ];
 
@@ -97,29 +96,41 @@ class AppointmentController extends Controller
                 $request->appointment_date . ' ' . $validatedData['time']
             );
 
-            $exists = Appointment::where('pet_id', $validatedData['pet_id'])
-                ->whereDate('appointment_date', $request->appointment_date)
-                ->whereIn('status', ['Pendiente', 'En proceso'])
-                ->exists();
-            $pet = Pet::find($validatedData['pet_id']);
+            if($request->quick_pet){
+                $appointment = new Appointment();
+                $appointment->user_id = auth()->id();
+                $appointment->appointment_date = $datetime;
+                $appointment->pet_name_temp = $request->pet_name_temp;
+                $appointment->owner_name_temp = $request->owner_name_temp;
+                $appointment->gender_temp = $request->gender_temp;
+                $appointment->phone_temp = $request->phone_temp;
+                $appointment->status = 'Pendiente';
+                $appointment->save();
+            }else{
+                $exists = Appointment::where('pet_id', $validatedData['pet_id'])
+                    ->whereDate('appointment_date', $request->appointment_date)
+                    ->whereIn('status', ['Pendiente', 'En proceso'])
+                    ->exists();
+                $pet = Pet::find($validatedData['pet_id']);
 
-            if ($exists) {
-                DB::rollBack();
+                if ($exists) {
+                    DB::rollBack();
 
-                return back()->with('error', $pet->name . ' ya tiene una cita agendada para hoy.');
+                    return back()->with('error', $pet->name . ' ya tiene una cita agendada para hoy.');
+                }
+
+                $appointment = new Appointment();
+                $appointment->user_id = $request->input('user_id');
+                $appointment->pet_id = $validatedData['pet_id'];
+                $appointment->appointment_date = $datetime;
+                $appointment->save();
             }
-
-            $appointment = new Appointment();
-            $appointment->user_id = $request->input('user_id');
-            $appointment->pet_id = $validatedData['pet_id'];
-            $appointment->appointment_date = $datetime;
-            $appointment->save();
 
             DB::commit();
 
             return redirect()->route('appointment.index')->with('success', 'Cita registrada',);
         } catch (\Exception $e) {
-
+            
             DB::rollback();
             return redirect()->back()->with('error', 'Error al registrar la cita');
         }
@@ -133,7 +144,7 @@ class AppointmentController extends Controller
 
         foreach ($appointments as $appointment) {
 
-            if (!$appointment->pet) continue;
+            if (!$appointment->pet && !$appointment->pet_name_temp) continue;
 
             switch ($appointment->status) {
                 case 'Pendiente':
@@ -154,19 +165,19 @@ class AppointmentController extends Controller
 
             $events[] = [
                 'id' => $appointment->id,
-                'title' => $appointment->pet->name . ' - ' . $appointment->pet->sobriquet,
+                'title' => $appointment->pet_id ? $appointment->pet->name : $appointment->pet_name_temp,
                 'start' => $appointment->appointment_date,
                 'color' => $color,
                 'extendedProps' => [
                     'pet_id' => $appointment->pet_id,
-                    'client' => $appointment->pet->client->name ?? '',
-                    'phone' => $appointment->pet->client->emergency_phone ?? '',
-                    'breed' => $appointment->pet->breed->name ?? '',
-                    'photo' => $appointment->pet->profile_photo ? asset('storage/' . $appointment->pet->profile_photo) : null,
-                    'age' => $appointment->pet->age,
-                    'gender' => $appointment->pet->gender,
-                    'medical_condition' => $appointment->pet->medical_condition,
-                    'observations' => $appointment->pet->observations,
+                    'client' => $appointment->pet->client->name ?? $appointment->owner_name_temp ?? '',
+                    'phone' => $appointment->pet->client->emergency_phone ?? $appointment->phone_temp ?? '',
+                    'breed' => $appointment->pet->breed->name ?? 'Mascota temporal',
+                    'photo' => $appointment->pet && $appointment->pet->profile_photo ? asset('storage/' . $appointment->pet->profile_photo) : null,
+                    'age' => $appointment->pet->age ?? 'Mascota temporal',
+                    'gender' => $appointment->pet->gender ?? $appointment->gender_temp ?? 'Mascota temporal',
+                    'medical_condition' => $appointment->pet->medical_condition ?? 'Mascota temporal',
+                    'observations' => $appointment->pet->observations ?? 'Mascota temporal',
                     'status' => $appointment->status,
                     'price' => number_format($appointment->price, 0, ',', '.'),
                     'checkin_time' => $appointment->checkin_time ? $appointment->checkin_time->format('d/m/Y g:i A') : null,
@@ -179,7 +190,7 @@ class AppointmentController extends Controller
                     'checkout_observations' => $appointment->checkout_observations,
                     'treatments' => $appointment->treatments->map(function ($t) {
                         return ['id' => $t->id, 'name' => $t->name];
-                    })
+                    }),
                 ]
             ];
         }

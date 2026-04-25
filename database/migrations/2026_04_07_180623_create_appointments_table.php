@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('pet_id')->constrained()->onDelete('cascade');
+            $table->foreignId('pet_id')->nullable()->constrained()->onDelete('cascade');
             $table->dateTime('appointment_date');   
             $table->enum('status', ['Pendiente', 'En proceso', 'Completada', 'Cancelada'])->default('Pendiente');
             $table->text('observations')->nullable();
@@ -29,6 +29,12 @@ return new class extends Migration
             $table->timestamp('checkout_time')->nullable();
             $table->string('checkout_photo')->nullable(); // Foto de salida
             $table->text('checkout_observations')->nullable();
+
+            // Cita temporal
+            $table->string('pet_name_temp')->nullable();
+            $table->string('owner_name_temp')->nullable();
+            $table->enum('gender_temp', ['Macho', 'Hembra'])->nullable();
+            $table->string('phone_temp')->nullable();
             
             $table->timestamps();
         });

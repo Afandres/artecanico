@@ -54,6 +54,35 @@
                         Historial de mascotas
                     </x-nav-link>
                 </div>
+                <div class="hidden sm:flex sm:items-center sm:ms-6">
+                    <x-dropdown align="left" width="48">
+                        <x-slot name="trigger">
+                            <button type="button"
+                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white hover:text-gray-700 focus:outline-none">
+                                Reportes
+                                <svg class="ms-2 size-4" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </button>
+                        </x-slot>
+                        <x-slot name="content">
+                            <x-dropdown-link href="{{ route('report.expenses') }}">
+                                Gestion de gastos
+                            </x-dropdown-link>
+                            <x-dropdown-link href="{{ route('report.daily') }}">
+                                Reporte diario
+                            </x-dropdown-link>
+                            <x-dropdown-link href="{{ route('report.monthly') }}">
+                                Reporte mensual
+                            </x-dropdown-link>
+                            <x-dropdown-link href="{{ route('reports.finance') }}">
+                                Reporte de finanzas
+                            </x-dropdown-link>
+                        </x-slot>
+                    </x-dropdown>
+                </div>
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ms-6">

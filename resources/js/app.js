@@ -35,3 +35,13 @@ if (petsTable) {
         });
     }
 }
+
+new DataTable('#reports', {
+    responsive: true,
+    scrollX: true,
+});
+
+new DataTable('#expenses', {
+    responsive: true,
+    scrollX: true,
+});

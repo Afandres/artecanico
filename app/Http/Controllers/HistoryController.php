@@ -231,7 +231,10 @@ class HistoryController extends Controller
                 'checkout_time' => $appointment->checkout_time->format('d/m/Y g:i A'),
                 'duration' => $durationText,
                 'price' => $appointment->price,
-                'status' => $appointment->status
+                'status' => $appointment->status,
+                'pet' => $appointment->pet_id ? $appointment->pet->name : $appointment->pet_name_temp,
+                'gender' => $appointment->pet->gender ?? $appointment->gender_temp ?? 'Mascota Temporal',
+                'phone' => $appointment->pet->client->emergency_phone ?? $appointment->phone_temp ?? '',
             ]);
             
         } catch (\Exception $e) {

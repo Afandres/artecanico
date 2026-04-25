@@ -375,7 +375,7 @@
                             ${treatmentsHtml}
                             <div class="mb-3">
                                 <label class="form-label">Precio</label>
-                                <input type="number" id="checkout_price" class="form-control" step="0.01" required>
+                                <input type="text" id="checkout_price" class="form-control" inputmode="numeric" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Foto de salida</label>
@@ -402,6 +402,20 @@
                                 placeholder: 'Selecciona el tratamiento aplicado'
                             });
 
+                            $('#checkout_price').on('input', function () {
+
+                                let valor = $(this).val().replace(/\D/g, ''); // solo números
+
+                                if (valor === '') {
+                                    $(this).val('');
+                                    return;
+                                }
+
+                                $(this).val(
+                                    parseInt(valor).toLocaleString('es-CO')
+                                );
+                            });
+
                             setTimeout(() => {
                                 const priceInput = document.getElementById(
                                     'checkout_price');
@@ -410,7 +424,7 @@
                         },
                         preConfirm: () => {
                             const treatmentId = $('#checkout_treatment_ids').val();
-                            const price = $('#checkout_price').val();
+                            const price = $('#checkout_price').val().replace(/\./g, '');
                             const observations = $('#checkout_obs_input').val();
                             const photoFile = $('#checkout_photo_input')[0].files[0];
 
@@ -452,6 +466,59 @@
                     }).then((result) => {
                         if (result.isConfirmed && result.value?.success) {
                             Swal.fire('Éxito', result.value.message, 'success');
+                            let pet = result.value.pet;      // nombre mascota
+                            let pet_temp = result.value.pet_temp;
+                            let phone = result.value.phone;  // teléfono cliente
+                            let phone_temp = result.value.phone_temp;
+                            let gender = result.value.gender;
+                            let status = 'Completada';
+
+                            let estadoTexto = (gender === 'Hembra') ? 'lista' : 'listo';
+
+                            if (status === 'Completada' && phone) {
+
+                                let mensaje = `Hola 👋 Te informamos que ${pet} ya está ${estadoTexto} 🐶✨. Gracias por confiar en nosotros ☺️`;
+
+                                let encoded = encodeURIComponent(mensaje);
+
+                                let appUrl = `whatsapp://send?phone=57${phone}&text=${encoded}`;
+                                let webUrl = `https://api.whatsapp.com/send?phone=57${phone}&text=${encoded}`;
+
+                                let isAndroid = /Android/i.test(navigator.userAgent);
+
+                                setTimeout(() => {
+                                    if (isAndroid) {
+                                        window.location.href = appUrl;
+
+                                        setTimeout(() => {
+                                            window.location.href = webUrl;
+                                        }, 1500);
+                                    } else {
+                                        window.open(webUrl, '_blank');
+                                    }
+                                }, 800);
+                            }else{
+                                let mensaje = `Hola 👋 Te informamos que ${pet_temp} ya está ${estadoTexto} 🐶✨. Gracias por confiar en nosotros ☺️`;
+
+                                let encoded = encodeURIComponent(mensaje);
+
+                                let appUrl = `whatsapp://send?phone=57${phone_temp}&text=${encoded}`;
+                                let webUrl = `https://api.whatsapp.com/send?phone=57${phone_temp}&text=${encoded}`;
+
+                                let isAndroid = /Android/i.test(navigator.userAgent);
+
+                                setTimeout(() => {
+                                    if (isAndroid) {
+                                        window.location.href = appUrl;
+
+                                        setTimeout(() => {
+                                            window.location.href = webUrl;
+                                        }, 1500);
+                                    } else {
+                                        window.open(webUrl, '_blank');
+                                    }
+                                }, 800);
+                            }
                             setTimeout(() => {
                                 location.reload();
                             }, 1500);

@@ -120,8 +120,7 @@
                     $('#pet_profile_photo').attr('src', data.photo || '/storage/pets/images.png');
                     $('#pet_name_display').text(data.name);
                     $('#pet_breed_display').text(data.breed);
-                    $('#pet_age_display').text(data.age ? data.age + ' años' :
-                        'Edad no registrada');
+                    $('#pet_age_display').text( data.age ? data.age + ' ' + (parseInt(data.age) === 1 ? 'año' : 'años') : 'Edad no registrada')
                     $('#pet_gender_display').text(data.gender);
                     $('#client_name_display').text(data.client_name);
                     $('#client_phone_display').text(data.client_phone);
