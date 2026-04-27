@@ -181,6 +181,7 @@ class HistoryController extends Controller
             'appointment_id' => 'required|exists:appointments,id',
             'treatment_id' => 'required|min:1',
             'price' => 'required|numeric|min:0', // Usamos price en lugar de final_price
+            'payment_method' => 'required',
             'checkout_observations' => 'nullable|string|max:500',
             'checkout_photo' => 'nullable|image|max:2048' // Foto de salida
         ]);
@@ -201,6 +202,7 @@ class HistoryController extends Controller
             $appointment->checkout_time = now();
             $appointment->checkout_observations = $request->checkout_observations;
             $appointment->price = $request->price; // Usamos el campo price
+            $appointment->payment_method = $request->payment_method;
             $appointment->status = 'Completada';
             
             // Foto de salida

@@ -378,6 +378,18 @@
                                 <input type="text" id="checkout_price" class="form-control" inputmode="numeric" required>
                             </div>
                             <div class="mb-3">
+                                <label class="form-label">Metodo de pago</label>
+                                <select id="checkout_payment_method" class="form-control">
+                                    <option>---Seleccione el metodo de pago ---</option>
+                                    <option value="Efectivo">Efectivo</option>
+                                    <option value="Nequi">Nequi</option>
+                                    <option value="Daviplata">Daviplata</option>
+                                    <option value="Tarjeta">Tarjeta</option>
+                                    <option value="Llave_nequi">Llave Nequi</option>
+                                    <option value="Llave_daviplata">Llave Daviplata</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
                                 <label class="form-label">Foto de salida</label>
                                 <input type="file" id="checkout_photo_input" class="form-control" accept="image/*" capture="environment">
                             </div>
@@ -425,6 +437,7 @@
                         preConfirm: () => {
                             const treatmentId = $('#checkout_treatment_ids').val();
                             const price = $('#checkout_price').val().replace(/\./g, '');
+                            const payment_method = $('#checkout_payment_method').val();
                             const observations = $('#checkout_obs_input').val();
                             const photoFile = $('#checkout_photo_input')[0].files[0];
 
@@ -438,10 +451,16 @@
                                 return false;
                             }
 
+                            if (!payment_method) {
+                                Swal.showValidationMessage('Ingresa el precio final');
+                                return false;
+                            }
+
                             const formData = new FormData();
                             formData.append('appointment_id', currentAppointmentId);
                             formData.append('treatment_id', treatmentId);
                             formData.append('price', price);
+                            formData.append('payment_method', payment_method);
                             formData.append('checkout_observations', observations);
 
                             if (photoFile) {

@@ -6,6 +6,155 @@
     </h2>
 </x-slot>
 
+<style>
+    .payment-mini-card{
+        border-radius:18px;
+        padding:18px;
+        color:#fff;
+        height:100%;
+        position:relative;
+        overflow:hidden;
+        box-shadow:0 12px 28px rgba(0,0,0,.12);
+        transition:.25s ease;
+    }
+
+    .payment-mini-card:hover,
+    .payment-method-mini-card:hover{
+        transform:translateY(-4px);
+        box-shadow:0 18px 35px rgba(0,0,0,.16);
+    }
+
+    .payment-mini-card small,
+    .payment-method-mini-card small{
+        display:block;
+        font-size:13px;
+        opacity:.92;
+        margin-bottom:8px;
+        letter-spacing:.3px;
+    }
+
+    .payment-mini-card h5{
+        margin:0;
+        font-weight:700;
+        font-size:28px;
+    }
+
+    .payment-method-mini-card h5{
+        margin:0;
+        font-weight:700;
+        font-size:28px;
+        color: white
+    }
+
+    .payment-mini-card i{
+        position:absolute;
+        top:16px;
+        right:16px;
+        font-size:22px;
+        opacity:.15;
+    }
+    .payment-method-mini-card i{
+        position:absolute;
+        top:16px;
+        right:16px;
+        font-size:22px;
+    }
+
+    .payment-method-mini-card{
+        border-radius:18px;
+        padding:18px;
+        color:#fff;
+        height:100%;
+        position:relative;
+        overflow:hidden;
+        box-shadow:0 12px 28px rgba(0,0,0,.10);
+    }
+
+    .payment-logo{
+        position:absolute;
+        top:14px;
+        right:14px;
+        width:34px;
+        height:34px;
+        object-fit:contain;
+        background:#fff;
+        padding:5px;
+        border-radius:50%;
+        box-shadow:0 6px 14px rgba(0,0,0,.14);
+    }
+
+    .card-income{
+        background:#ffffff;
+        color:#111827;
+        border:1px solid #e5e7eb;
+    }
+
+    .card-expense{
+        background:#ffffff;
+        color:#111827;
+        border:1px solid #e5e7eb;
+    }
+
+    .card-profit{
+        background:#ffffff;
+        color:#111827;
+        border:1px solid #e5e7eb;
+    }
+
+    .card-income i{
+        color:#059669;
+        opacity:.12;
+    }
+
+    .card-expense i{
+        color:#dc2626;
+        opacity:.12;
+    }
+
+    .card-profit i{
+        color:#2563eb;
+        opacity:.12;
+    }
+
+    .card-income h5{
+        color:#059669;
+    }
+
+    .card-expense h5{
+        color:#dc2626;
+    }
+
+    .card-profit h5{
+        color:#2563eb;
+    }
+
+    .card-income small,
+    .card-expense small,
+    .card-profit small{
+        color:#6b7280;
+    }
+
+    .bg-efectivo{
+        background:#16a34a;
+    }
+
+    .bg-nequi{
+        background:#7c3aed;
+    }
+
+    .bg-daviplata{
+        background:#dc2626;
+    }
+
+    .bg-tarjeta{
+        background:#2563eb;
+    }
+
+    .bg-default{
+        background:#6b7280;
+    }
+</style>
+
 <div class="container py-4">
 
     <form method="GET" class="row g-2 mb-4">
@@ -37,36 +186,74 @@
     </form>
 
     <!-- TARJETAS -->
-    <div class="row g-4 mb-4">
+    <div class="row g-3 mb-4">
 
         <div class="col-md-4">
-            <div class="card shadow border-0 rounded-4 p-4">
-                <small>Total vendido</small>
-                <h2 class="text-success fw-bold">
-                    $ {{ number_format($total,0,',','.') }}
-                </h2>
+            <div class="payment-mini-card card-income">
+                <i class="fa-solid fa-sack-dollar"></i>
+                <small>Ingresos del mes</small>
+                <h5>$ {{ number_format($total,0,',','.') }}</h5>
             </div>
         </div>
 
         <div class="col-md-4">
-            <div class="card shadow border-0 rounded-4 p-4">
-                <small>Total gastos</small>
-                <h2 class="text-danger fw-bold">
-                    $ {{ number_format($totalExpenses,0,',','.') }}
-                </h2>
+            <div class="payment-mini-card card-expense">
+                <i class="fa-solid fa-arrow-trend-down"></i>
+                <small>Gastos del mes</small>
+                <h5>$ {{ number_format($totalExpenses,0,',','.') }}</h5>
             </div>
         </div>
 
         <div class="col-md-4">
-            <div class="card shadow border-0 rounded-4 p-4">
-                <small>Ganancia neta</small>
-                <h2 class="text-primary fw-bold">
-                    $ {{ number_format($profit,0,',','.') }}
-                </h2>
+            <div class="payment-mini-card card-profit">
+                <i class="fa-solid fa-chart-line"></i>
+                <small>Utilidad</small>
+                <h5>$ {{ number_format($profit,0,',','.') }}</h5>
             </div>
         </div>
 
     </div>
+
+    <div class="row g-3 mb-4">
+
+        @foreach($payments as $method => $amount)
+
+        @php
+            $class = 'bg-secondary';
+            $icon = '<i class="fa-solid fa-money-bill"></i>';
+
+            if($method == 'Efectivo'){
+                $class = 'bg-efectivo';
+                $icon = '<i class="fa-brands fa-cash-app"></i>';
+            }
+
+            elseif($method == 'Nequi' || $method == 'Llave_nequi'){
+                $class = 'bg-nequi';
+               $icon = '<img src="/images/payments/nequi.png" class="payment-logo">';
+            }
+
+            elseif($method == 'Daviplata' || $method == 'Llave_daviplata'){
+                $class = 'bg-daviplata';
+                $icon = '<img src="/images/payments/daviplata.png" class="payment-logo">';
+            }
+
+            elseif($method == 'Tarjeta'){
+                $class = 'bg-tarjeta';
+                $icon = '<i class="fa-solid fa-credit-card"></i>';
+            }
+        @endphp
+
+        <div class="col-md-3 col-6">
+            <div class="payment-method-mini-card {{ $class }}">
+                {!! $icon !!}
+                <small>{{ str_replace('_',' ', $method) }}</small>
+                <h5>$ {{ number_format($amount,0,',','.') }}</h5>
+            </div>
+        </div>
+
+        @endforeach
+
+        </div>
 
     <!-- GRAFICA -->
     <div class="card shadow border-0 rounded-4 p-4">

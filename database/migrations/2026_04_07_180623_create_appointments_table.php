@@ -16,6 +16,7 @@ return new class extends Migration
             $table->enum('status', ['Pendiente', 'En proceso', 'Completada', 'Cancelada'])->default('Pendiente');
             $table->text('observations')->nullable();
             $table->decimal('price', 10, 2)->nullable(); // Usaremos este campo para el precio final
+            $table->enum('payment_method', ['Efectivo', 'Nequi', 'Daviplata', 'Tarjeta', 'Llave_nequi', 'Llave_daviplata'])->nullable();
             $table->string('photo')->nullable(); // Foto final del servicio
             
             // Nuevos campos

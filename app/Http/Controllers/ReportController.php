@@ -34,9 +34,28 @@ class ReportController extends Controller
 
         $total = $appointments->sum('price');
 
+       $payments = $appointments
+        ->where('status', 'Completada')
+        ->groupBy(function ($item) {
+
+            if (in_array($item->payment_method, ['Nequi', 'Llave_nequi'])) {
+                return 'Nequi';
+            }
+
+            if (in_array($item->payment_method, ['Daviplata', 'Llave_daviplata'])) {
+                return 'Daviplata';
+            }
+
+            return $item->payment_method;
+        })
+        ->map(function ($items) {
+            return $items->sum('price');
+        });
+        
         return response()->json([
             'appointments' => $appointments,
             'total' => number_format($total,0,',','.'),
+            'payments' => $payments
         ]);
     }
 
@@ -181,6 +200,20 @@ class ReportController extends Controller
             $dailyExpenses[] = $expenseDay;
         }
 
+        $payments = Appointment::whereMonth('appointment_date', $month)
+        ->whereYear('appointment_date', $year)
+        ->where('status', 'Completada')
+        ->selectRaw("
+            CASE
+                WHEN payment_method IN ('Nequi', 'Llave_nequi') THEN 'Nequi'
+                WHEN payment_method IN ('Daviplata', 'Llave_daviplata') THEN 'Daviplata'
+                ELSE payment_method
+            END as payment_group,
+            SUM(price) as total
+        ")
+        ->groupBy('payment_group')
+        ->pluck('total', 'payment_group');
+
         return view('reports.monthly', compact(
             'month',
             'year',
@@ -190,7 +223,8 @@ class ReportController extends Controller
             'profit',
             'dailyTotals',
             'dailyExpenses',
-            'daysInMonth'
+            'daysInMonth',
+            'payments'
         ));
     }
     public function finance(Request $request)

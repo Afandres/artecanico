@@ -55,6 +55,7 @@
                     </x-nav-link>
                 </div>
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
+                    @auth
                     <x-dropdown align="left" width="48">
                         <x-slot name="trigger">
                             <button type="button"
@@ -82,6 +83,7 @@
                             </x-dropdown-link>
                         </x-slot>
                     </x-dropdown>
+                    @endauth
                 </div>
             </div>
 
@@ -167,13 +169,6 @@
                                     </span>
                                 @endif
                             @endauth
-
-                            @guest
-                                <a href="{{ route('login') }}"
-                                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">
-                                    Iniciar sesión
-                                </a>
-                            @endguest
                         </x-slot>
 
                         <x-slot name="content">
@@ -242,6 +237,25 @@
                 Historial de mascotas
             </x-responsive-nav-link>
         </div>
+        @auth
+            <div class="pt-2 pb-3 space-y-1">
+                <div class="block px-4 py-2 text-xs text-gray-400">
+                    Reportes
+                </div>
+                <x-responsive-nav-link href="{{ route('report.expenses') }}" :active="request()->routeIs('eport.expenses')">
+                    Gestion de gastos
+                </x-responsive-nav-link>
+                <x-responsive-nav-link href="{{ route('report.daily') }}" :active="request()->routeIs('report.daily')">
+                    Reporte diario
+                </x-responsive-nav-link>
+                <x-responsive-nav-link href="{{ route('report.monthly') }}" :active="request()->routeIs('report.monthly')">
+                    Reporte mensual
+                </x-responsive-nav-link>
+                <x-responsive-nav-link href="{{ route('reports.finance') }}" :active="request()->routeIs('reports.finance')">
+                    Reporte de finanzas
+                </x-responsive-nav-link>
+            </div>
+        @endauth
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="flex items-center px-4">

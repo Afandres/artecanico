@@ -16,15 +16,24 @@ class Appointment extends Model
         'status',
         'observations',
         'price',
+        'payment_method',
         'photo',
         'checkin_time',
         'checkin_photo',
         'checkin_observations',
+        'process_photo',
+        'process_observations',
         'checkout_time',
+        'checkout_photo',
         'checkout_observations',
-        'final_price'
+        'pet_name_temp',
+        'owner_name_temp',
+        'gender_temp',
+        'phone_temp',
     ];
 
+    protected $appends = ['payment_method_label'];
+    
     protected $casts = [
         'appointment_date' => 'datetime',
         'checkin_time' => 'datetime',
@@ -60,5 +69,13 @@ class Appointment extends Model
         return $query->whereNotNull('checkin_time')
                      ->whereNull('checkout_time')
                      ->where('status', '!=', 'Cancelada');
+    }
+
+    public function getPaymentMethodLabelAttribute()
+    {
+        return [
+            'Llave_nequi' => 'Llave Nequi',
+            'Llave_daviplata' => 'Llave Daviplata',
+        ][$this->payment_method] ?? $this->payment_method;
     }
 }
