@@ -1,4 +1,42 @@
 /* ============================================
+   PROTECCIÓN DE ESTILOS DE TÍTULOS
+============================================ */
+
+/* Reset para los títulos de página */
+.custom-page-header h2,
+.custom-page-header .font-semibold,
+header .font-semibold,
+h2.font-semibold.text-xl.text-gray-800.leading-tight {
+    font-family: 'Fredoka One', cursive !important;
+    font-size: 1.5rem !important;
+    font-weight: 400 !important;
+    color: #3d1a28 !important;
+    letter-spacing: normal !important;
+    line-height: 1.25 !important;
+}
+
+/* Evitar que Tailwind sobrescriba los títulos */
+.font-semibold {
+    font-weight: 400 !important;
+}
+
+.text-xl {
+    font-size: 1.5rem !important;
+}
+
+.text-gray-800 {
+    color: #3d1a28 !important;
+}
+
+/* Asegurar que los títulos de las cards también se vean bien */
+.card-header,
+.modal-title,
+.fc-toolbar-title {
+    font-family: 'Fredoka One', cursive !important;
+    font-weight: 400 !important;
+}
+
+/* ============================================
    LOGIN - PELUQUERÍA CANINA - ROSA SUAVE
 ============================================ */
 
@@ -472,9 +510,36 @@ body:has(.pg-wrapper) {
 
 /* ── MOBILE MENU ── */
 .pp-mobile-menu {
-    display: none;
     border-top: 1.5px solid #fce7f0;
     background: #fff;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+}
+
+/* Cuando Alpine.js lo muestra */
+.pp-mobile-menu[style*="display: block"] {
+    display: block !important;
+}
+
+/* En pantallas grandes, ocultar siempre */
+@media (min-width: 769px) {
+    .pp-mobile-menu {
+        display: none !important;
+    }
+}
+
+/* En móvil, asegurar que aparezca */
+@media (max-width: 768px) {
+    .pp-mobile-menu {
+        width: 100%;
+    }
+}
+
+/* Cuando está abierto */
+.pp-mobile-menu.open {
+    display: block !important;
 }
 
 .pp-mobile-section {
@@ -573,4 +638,37 @@ body:has(.pg-wrapper) {
     color: #78350f !important;
     transform: translateY(-1px);
     box-shadow: 0 6px 14px rgba(217, 119, 6, .18);
+}
+
+/* Transición suave para el menú móvil */
+.pp-mobile-menu {
+    transition: all 0.3s ease;
+}
+
+/* Asegurar que el menú móvil aparezca correctamente */
+@media (max-width: 768px) {
+    .pp-mobile-menu {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        width: 100%;
+        background: #fff;
+        z-index: 1000;
+        border-top: 1.5px solid #fce7f0;
+        box-shadow: 0 4px 20px rgba(196, 79, 128, .09);
+    }
+    
+    .pp-mobile-menu[x-show="true"] {
+        display: block !important;
+    }
+}
+
+/* Ocultar los íconos por defecto y mostrar según el estado */
+[x-cloak] {
+    display: none !important;
+}
+
+.pp-hamburger svg {
+    transition: all 0.2s ease;
 }

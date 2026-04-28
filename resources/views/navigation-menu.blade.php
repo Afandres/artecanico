@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="pp-nav">
+<nav x-data="{ open: false }" class="pp-nav" x-cloak>
     <div class="pp-nav-inner">
 
         {{-- IZQUIERDA: Logo + Links --}}
@@ -15,7 +15,6 @@
 
             {{-- Links desktop --}}
             <div class="pp-links">
-
                 @auth
                     {{-- Dropdown Parámetros --}}
                     <div class="pp-dropdown" x-data="{ ddOpen: false }" @mouseenter="ddOpen=true" @mouseleave="ddOpen=false">
@@ -94,7 +93,6 @@
 
         {{-- DERECHA: Usuario / Login --}}
         <div class="pp-nav-right">
-
             @auth
                 {{-- Teams dropdown (si aplica) --}}
                 @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
@@ -181,19 +179,19 @@
             @endguest
         </div>
 
-        {{-- Hamburger --}}
+        {{-- HAMBURGER BUTTON --}}
         <button @click="open = !open" class="pp-hamburger">
-            <svg class="size-5" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex" stroke-linecap="round"
-                    stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
-                    stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="hamburger-icon" style="width: 22px; height: 22px;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg x-show="open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="close-icon" style="width: 22px; height: 22px;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
         </button>
     </div>
 
-    {{-- Menú móvil --}}
-    <div x-show="open" x-cloak class="pp-mobile-menu">
+    {{-- MENÚ MÓVIL --}}
+    <div x-show="open" x-transition class="pp-mobile-menu">
         @auth
             <div class="pp-mobile-section">
                 <div class="pp-mobile-label">⚙️ Parámetros</div>
@@ -211,43 +209,23 @@
         @endauth
 
         <div class="pp-mobile-section">
-            <a class="pp-mobile-link {{ request()->routeIs('appointment.index', 'appointment.client.index') ? 'active' : '' }}"
-                href="{{ $appointmentRoute }}">
-                📅 Citas
-            </a>
-            <a class="pp-mobile-link {{ request()->routeIs('pet.index', 'pet.client.index') ? 'active' : '' }}"
-                href="{{ $petRoute }}">
-                🐶 Mascotas
-            </a>
-            <a class="pp-mobile-link {{ request()->routeIs('history.index', 'history.client.index') ? 'active' : '' }}"
-                href="{{ $historyRoute }}">
-                📋 Historial de mascotas
-            </a>
+            <a class="pp-mobile-link" href="{{ $appointmentRoute }}">📅 Citas</a>
+            <a class="pp-mobile-link" href="{{ $petRoute }}">🐶 Mascotas</a>
+            <a class="pp-mobile-link" href="{{ $historyRoute }}">📋 Historial</a>
         </div>
 
         <div class="pp-mobile-user">
             @auth
                 <div class="pp-mobile-user-info">
-                    @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
-                        <img class="pp-avatar-img" src="{{ Auth::user()->profile_photo_url }}"
-                            alt="{{ Auth::user()->name }}">
-                    @else
-                        <div class="pp-avatar-initials">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
-                    @endif
                     <span class="pp-user-name">{{ Auth::user()->name }}</span>
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="pp-mobile-link"
-                        style="width:100%;text-align:left;background:none;border:none;cursor:pointer;">
-                        🚪 Cerrar Sesión
-                    </button>
+                    <button type="submit" class="pp-mobile-link">🚪 Cerrar Sesión</button>
                 </form>
             @endauth
             @guest
-                <a href="{{ route('login') }}" class="pp-login-btn" style="display:inline-flex;margin:8px 16px;">
-                    Iniciar sesión
-                </a>
+                <a href="{{ route('login') }}" class="pp-login-btn">Iniciar sesión</a>
             @endguest
         </div>
     </div>

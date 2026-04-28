@@ -52,7 +52,6 @@
             <div class="container">
                 {{ $slot }}
             </div>
-            
         </main>
     </div>
 
@@ -82,6 +81,9 @@
 
     <!-- 6. FullCalendar -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.20/index.global.min.js"></script>
+
+    <!-- 7. Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <script>
         $.extend(true, $.fn.dataTable.defaults, {
