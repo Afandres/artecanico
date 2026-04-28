@@ -1,116 +1,576 @@
+/* ============================================
+   LOGIN - PELUQUERÍA CANINA - ROSA SUAVE
+============================================ */
 
-/* =====================================
-   FUENTE GENERAL
-===================================== */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700&display=swap');
 
-
-body{
-    font-family: 'Nunito', sans-serif;
-    background: linear-gradient(180deg,#fffaf7 0%, #fff 100%);
-    color:#2d3748;
+/* Reset para la página de login */
+body:has(.pg-wrapper) {
+    background: #fdf6ee;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
 }
 
+.pg-login-bg { position:fixed;inset:0;pointer-events:none;z-index:0; }
+.pg-blob { position:absolute;border-radius:50%;filter:blur(70px);opacity:.28; }
+.pg-blob-1 { width:450px;height:450px;background:#f9a8c9;top:-130px;left:-100px;animation:pg-d1 9s ease-in-out infinite; }
+.pg-blob-2 { width:320px;height:320px;background:#e879a0;bottom:-90px;right:-70px;animation:pg-d2 11s ease-in-out infinite; }
+.pg-blob-3 { width:240px;height:240px;background:#fbcfe8;top:38%;right:8%;animation:pg-d1 13s ease-in-out infinite reverse; }
 
-/* =====================================
-   HEADER / NAVBAR
-===================================== */
-header,
-nav{
-    background: linear-gradient(90deg,#ffffff,#fff5ef);
-    border-bottom:1px solid #ffe2d5;
-    box-shadow:0 4px 14px rgba(0,0,0,.04);
-}
+@keyframes pg-d1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(28px,18px)} }
+@keyframes pg-d2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-18px,28px)} }
 
-/* TITULOS */
-h1,h2,h3,h4,h5{
-    font-weight:800;
-    color:#2c3e50;
-}
+.pg-paws-bg { position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden; }
+.pg-paw { position:absolute;opacity:.055;font-size:46px;animation:pg-fl 7s ease-in-out infinite; }
+@keyframes pg-fl { 0%,100%{transform:translateY(0)rotate(0deg)} 50%{transform:translateY(-14px)rotate(10deg)} }
 
-/* =====================================
-   BOTONES GENERALES
-===================================== */
-.btn{
-    border-radius:12px !important;
-    font-weight:700;
-    transition:.2s ease;
+.pg-wrapper {
+    position:relative;z-index:10;
+    display:flex;width:920px;max-width:96vw;min-height:575px;
+    border-radius:32px;overflow:hidden;
+    box-shadow:0 32px 80px rgba(200,60,120,.15),0 8px 24px rgba(0,0,0,.07);
 }
 
-.btn:hover{
-    transform:translateY(-2px);
+/* ── PANEL IZQUIERDO ── */
+.pg-left {
+    flex:1;
+    background:linear-gradient(148deg,#e8709a 0%,#c44f80 55%,#9c3362 100%);
+    padding:52px 44px;
+    display:flex;flex-direction:column;justify-content:space-between;
+    position:relative;overflow:hidden;
+}
+.pg-left::before {
+    content:'';position:absolute;
+    width:320px;height:320px;border-radius:50%;
+    border:65px solid rgba(255,255,255,.07);
+    bottom:-90px;right:-90px;
+}
+.pg-left::after {
+    content:'';position:absolute;
+    width:190px;height:190px;border-radius:50%;
+    border:45px solid rgba(255,255,255,.06);
+    top:-45px;left:-45px;
 }
 
-/* =====================================
-   CONTENEDOR PRINCIPAL
-===================================== */
-.bg-white{
-    background:#ffffff !important;
-    border-radius:20px !important;
-    box-shadow:0 10px 35px rgba(0,0,0,.06) !important;
-    border:1px solid #fff0e8;
+.pg-brand { display:flex;flex-direction:column;gap:14px;position:relative;z-index:2; }
+
+/* Logo sobre fondo blanco */
+.pg-logo-box {
+    display:inline-flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,0.95);
+    border-radius:20px;
+    padding:14px 22px;
+    width:fit-content;
+    box-shadow:0 4px 20px rgba(0,0,0,.12);
+    text-decoration:none;
+    animation:pg-waggle 3.5s ease-in-out infinite;
+}
+@keyframes pg-waggle { 0%,100%{transform:rotate(-2deg)} 50%{transform:rotate(2deg)} }
+
+.pg-brand-tag { font-size:13.5px;color:rgba(255,255,255,.78);font-weight:600; }
+
+.pg-features { position:relative;z-index:2;display:flex;flex-direction:column;gap:13px; }
+
+.pg-feat {
+    display:flex;align-items:center;gap:12px;
+    background:rgba(255,255,255,.12);
+    border-radius:15px;padding:12px 16px;
+    border:1px solid rgba(255,255,255,.18);
+    animation:pg-sli .6s ease both;
+}
+.pg-feat:nth-child(1){animation-delay:.1s}
+.pg-feat:nth-child(2){animation-delay:.22s}
+.pg-feat:nth-child(3){animation-delay:.34s}
+@keyframes pg-sli { from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:translateX(0)} }
+
+.pg-feat-icon {
+    font-size:21px;width:38px;height:38px;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,.18);border-radius:10px;flex-shrink:0;
+}
+.pg-feat strong { display:block;color:#fff;font-size:13px;font-weight:700; }
+.pg-feat span { color:rgba(255,255,255,.68);font-size:11.5px; }
+
+/* ── PANEL DERECHO ── */
+.pg-right {
+    width:430px;background:#fff;
+    padding:50px 46px;
+    display:flex;flex-direction:column;justify-content:center;gap:22px;
 }
 
-/* =====================================
-   BOTONES GENERALES
-===================================== */
-.btn{
-    border-radius:12px !important;
-    font-weight:700;
-    transition:.2s ease;
+/* Logo mini */
+.pg-logo-mini-wrap { display:flex;justify-content:center; }
+.pg-logo-mini {
+    display:inline-flex;align-items:center;
+    background:#fff0f6;border-radius:16px;
+    padding:10px 20px;
+    border:1.5px solid #fce7f0;
+    text-decoration:none;
 }
 
-.btn:hover{
-    transform:translateY(-2px);
+.pg-title {
+    font-family:'Fredoka One',cursive;
+    font-size:27px;color:#3d1a28;line-height:1.15;font-weight:400;
+}
+.pg-sub { font-size:13.5px;color:#9e6a80;margin-top:4px;font-weight:500; }
+
+.pg-group { display:flex;flex-direction:column;gap:6px;animation:pg-fu .5s ease both; }
+.pg-group:nth-of-type(1){animation-delay:.08s}
+.pg-group:nth-of-type(2){animation-delay:.18s}
+@keyframes pg-fu { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+.pg-label {
+    font-size:11.5px;font-weight:700;color:#5a2a3a;
+    letter-spacing:.5px;text-transform:uppercase;
 }
 
-/* BOTON PRINCIPAL */
-.btn-primary{
-    background:linear-gradient(135deg,#60a5fa,#2563eb) !important;
-    border:none !important;
-    color:#fff !important;
+.pg-input-wrap { position:relative; }
+.pg-icon {
+    position:absolute;left:14px;top:50%;transform:translateY(-50%);
+    font-size:15px;opacity:.45;pointer-events:none;
 }
-.btn-success{
-    background:linear-gradient(135deg,#34d399,#059669) !important;
-    border:none !important;
-    color:#fff !important;
+.pg-input {
+    width:100%;
+    padding:13px 14px 13px 42px;
+    border:2px solid #fce7f0;
+    border-radius:14px;
+    font-family:'Quicksand',sans-serif;
+    font-size:14px;font-weight:500;color:#3d1a28;
+    background:#fff8fb;
+    transition:all .2s ease;outline:none;
+}
+.pg-input:focus {
+    border-color:#e8709a;background:#fff;
+    box-shadow:0 0 0 4px rgba(232,112,154,.13);
+}
+.pg-input::placeholder { color:#d4a0b5; }
+
+.pg-row-check { display:flex;align-items:center;justify-content:space-between; }
+.pg-check-label {
+    display:flex;align-items:center;gap:8px;cursor:pointer;
+    font-size:13px;color:#8a5068;font-weight:600;
+    font-family:'Quicksand',sans-serif;
+}
+.pg-check-label input[type="checkbox"] { width:18px;height:18px;accent-color:#e8709a;cursor:pointer; }
+
+.pg-forgot {
+    font-size:13px;color:#e8709a;text-decoration:none;
+    font-weight:700;font-family:'Quicksand',sans-serif;transition:color .2s;
+}
+.pg-forgot:hover { color:#c44f80; }
+
+.pg-btn-login {
+    width:100%;padding:15px;
+    background:linear-gradient(135deg,#f48fba 0%,#e8709a 50%,#c44f80 100%);
+    border:none;border-radius:16px;color:#fff;
+    font-family:'Fredoka One',cursive;
+    font-size:17px;letter-spacing:.5px;cursor:pointer;
+    transition:all .25s ease;
+    box-shadow:0 8px 24px rgba(196,79,128,.32);
+    animation:pg-fu .5s .28s ease both;
+}
+.pg-btn-login:hover { transform:translateY(-2px);box-shadow:0 14px 36px rgba(196,79,128,.42); }
+.pg-btn-login:active { transform:translateY(0); }
+
+.pg-footer {
+    text-align:center;font-size:12px;color:#c090a8;
+    font-weight:500;font-family:'Quicksand',sans-serif;
+}
+.pg-pawdots { display:flex;justify-content:center;gap:6px;margin-top:5px; }
+.pg-pawdots span { font-size:10px;opacity:.4;animation:pg-pulse 2.2s ease-in-out infinite; }
+.pg-pawdots span:nth-child(2){animation-delay:.3s}
+.pg-pawdots span:nth-child(3){animation-delay:.6s}
+@keyframes pg-pulse { 0%,100%{opacity:.4;transform:scale(1)} 50%{opacity:.85;transform:scale(1.25)} }
+
+@media(max-width:700px){
+    .pg-left{display:none}
+    .pg-right{width:100%;padding:38px 26px}
 }
 
-.btn-primary:hover,
-.btn-success:hover{
-    box-shadow:0 8px 20px rgba(8,145,178,.30);
-}
-/* SECUNDARIO */
-.btn-secondary{
-    background:#eef6ff !important;
-    color:#2563eb !important;
-    border:none !important;
+/* ============================================
+   NAVBAR - PELUQUERÍA CANINA (VERSIÓN CORREGIDA)
+============================================ */
+
+.pp-nav {
+    background: #fff;
+    border-bottom: 2px solid #fce7f0;
+    box-shadow: 0 4px 20px rgba(196, 79, 128, .09);
+    font-family: 'Quicksand', sans-serif;
+    position: sticky;
+    top: 0;
+    z-index: 200;
 }
 
-/* INFO */
-.btn-info{
-    background:#dff7ff !important;
-    color:#0284c7 !important;
-    border:none !important;
+.pp-nav-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 68px;
 }
 
-/* DANGER */
-.btn-danger{
-    background:#ffe3e3 !important;
-    color:#dc2626 !important;
-    border:none !important;
+/* ── LOGO ── */
+.pp-nav-left {
+    display: flex;
+    align-items: center;
+    gap: 0;
 }
 
-.btn-warning{
-    background:#facc15 !important;   /* amarillo más vivo */
-    color:#92400e !important;        /* texto más fuerte */
-    border:none !important;
+.pp-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    padding-right: 24px;
+    border-right: 1.5px solid #fce7f0;
+    margin-right: 4px;
+}
+
+.pp-logo-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f48fba, #c44f80);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.pp-logo-text {
+    font-family: 'Fredoka One', cursive;
+    font-size: 19px;
+    color: #c44f80;
+    letter-spacing: .3px;
+}
+
+/* ── LINKS ── */
+.pp-links {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding-left: 10px;
+}
+
+.pp-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 13px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #9e6a80;
+    text-decoration: none;
+    transition: .18s;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    white-space: nowrap;
+}
+
+.pp-link:hover {
+    background: #fff0f6;
+    color: #c44f80;
+}
+
+.pp-link.active {
+    background: #fce7f0;
+    color: #c44f80;
+}
+
+.pp-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 12px;
+    right: 12px;
+    height: 2px;
+    border-radius: 2px 2px 0 0;
+    background: linear-gradient(90deg, #f48fba, #c44f80);
+}
+
+.pp-link-icon {
+    font-size: 14px;
+}
+
+.pp-chevron {
+    color: #b08090;
+    flex-shrink: 0;
+    transition: transform .2s;
+}
+
+.pp-chevron.rotated {
+    transform: rotate(180deg);
+}
+
+/* ── DROPDOWN ── */
+.pp-dropdown {
+    position: relative;
+}
+
+.pp-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    background: #fff;
+    border-radius: 16px;
+    border: 1.5px solid #fce7f0;
+    box-shadow: 0 12px 40px rgba(196, 79, 128, .15);
+    min-width: 180px;
+    overflow: hidden;
+    z-index: 300;
+}
+
+.pp-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 18px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #5a2a3a;
+    text-decoration: none;
+    transition: .15s;
+    border-bottom: 1px solid #fff0f6;
+}
+
+.pp-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.pp-dropdown-item:hover {
+    background: #fff5f9;
+    color: #c44f80;
+}
+
+/* ── DERECHA ── */
+.pp-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pp-separator {
+    width: 1px;
+    height: 22px;
+    background: #fce7f0;
+}
+
+/* Usuario pill */
+.pp-user-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff8fb;
+    border-radius: 14px;
+    padding: 7px 12px 7px 8px;
+    border: 1.5px solid #fce7f0;
+    cursor: pointer;
+    transition: .18s;
+}
+
+.pp-user-pill:hover {
+    background: #fce7f0;
+}
+
+.pp-avatar-initials {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f48fba, #c44f80);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.pp-avatar-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.pp-user-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #5a2a3a;
+}
+
+/* Botón salir */
+.pp-logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #c44f80;
+    background: #fff0f6;
+    border: 1.5px solid #fce7f0;
+    cursor: pointer;
+    transition: .18s;
+}
+
+.pp-logout-btn:hover {
+    background: #fce7f0;
+    box-shadow: 0 4px 12px rgba(196, 79, 128, .18);
+}
+
+/* Botón login */
+.pp-login-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 18px;
+    border-radius: 12px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, #f48fba, #c44f80);
+    border: none;
+    cursor: pointer;
+    transition: .18s;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(196, 79, 128, .3);
+}
+
+.pp-login-btn:hover {
+    filter: brightness(1.07);
+    transform: translateY(-1px);
+}
+
+/* ── HAMBURGER ── */
+.pp-hamburger {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: #fce7f0;
+    border: none;
+    cursor: pointer;
+    color: #c44f80;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ── MOBILE MENU ── */
+.pp-mobile-menu {
+    display: none;
+    border-top: 1.5px solid #fce7f0;
+    background: #fff;
+}
+
+.pp-mobile-section {
+    padding: 8px 0;
+    border-bottom: 1px solid #fff0f6;
+}
+
+.pp-mobile-label {
+    padding: 8px 20px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #b08090;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    font-family: 'Quicksand', sans-serif;
+}
+
+.pp-mobile-link {
+    display: block;
+    padding: 10px 24px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #5a2a3a;
+    text-decoration: none;
+    transition: .15s;
+}
+
+.pp-mobile-link:hover,
+.pp-mobile-link.active {
+    background: #fff5f9;
+    color: #c44f80;
+}
+
+.pp-mobile-user {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pp-mobile-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+    /* Ocultar elementos de escritorio */
+    .pp-links,
+    .pp-nav-right,
+    .pp-separator {
+        display: none !important;
+    }
+    
+    /* Mostrar hamburguesa */
+    .pp-hamburger {
+        display: flex !important;
+    }
+    
+    /* Reducir altura del navbar */
+    .pp-nav-inner {
+        height: 60px;
+        padding: 0 20px;
+    }
+}
+
+/* En pantallas grandes, asegurar que el menú móvil esté oculto */
+@media (min-width: 769px) {
+    .pp-hamburger {
+        display: none !important;
+    }
+    
+    .pp-mobile-menu {
+        display: none !important;
+    }
+}
+
+/* Prevenir flash del contenido */
+[x-cloak] {
+    display: none !important;
+}
+
+/* Estilos adicionales para el navbar */
+.btn-warning {
+    background: #facc15 !important;
+    color: #92400e !important;
+    border: none !important;
     transition: all .2s ease;
 }
 
-.btn-warning:hover{
-    background:#eab308 !important;   /* hover más intenso */
-    color:#78350f !important;
+.btn-warning:hover {
+    background: #eab308 !important;
+    color: #78350f !important;
     transform: translateY(-1px);
-    box-shadow: 0 6px 14px rgba(217,119,6,.18);
+    box-shadow: 0 6px 14px rgba(217, 119, 6, .18);
 }

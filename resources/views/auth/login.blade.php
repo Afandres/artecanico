@@ -1,48 +1,126 @@
 <x-guest-layout>
-    <x-authentication-card>
-        <x-slot name="logo">
-            <x-authentication-card-logo />
-        </x-slot>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<div class="pg-login-bg">
+    <div class="pg-blob pg-blob-1"></div>
+    <div class="pg-blob pg-blob-2"></div>
+    <div class="pg-blob pg-blob-3"></div>
+</div>
+<div class="pg-paws-bg" id="pgPawsBg"></div>
+
+<div class="pg-wrapper">
+
+    {{-- PANEL IZQUIERDO --}}
+    <div class="pg-left">
+        <div class="pg-brand">
+            {{-- Logo sobre fondo blanco --}}
+            <a href="#" class="pg-logo-box">
+                <img src="{{ asset('images/logo.png') }}" width="150" alt="{{ config('app.name') }}">
+            </a>
+            <div class="pg-brand-tag">✨ Gestión profesional para tu peluquería</div>
+        </div>
+        <div class="pg-features">
+            <div class="pg-feat">
+                <div class="pg-feat-icon">✂️</div>
+                <div>
+                    <strong>Turnos en un click</strong>
+                    <span>Agenda y gestiona citas fácilmente</span>
+                </div>
+            </div>
+            <div class="pg-feat">
+                <div class="pg-feat-icon">🐶</div>
+                <div>
+                    <strong>Historial de mascotas</strong>
+                    <span>Fichas completas de cada perrito</span>
+                </div>
+            </div>
+            <div class="pg-feat">
+                <div class="pg-feat-icon">📊</div>
+                <div>
+                    <strong>Reportes de negocio</strong>
+                    <span>Control de ingresos y clientes</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- PANEL DERECHO --}}
+    <div class="pg-right">
+
+        {{-- Logo mini en panel derecho --}}
+        <div class="pg-logo-mini-wrap">
+            <a href="#" class="pg-logo-mini">
+                <img src="{{ asset('images/logo.png') }}" width="130" alt="{{ config('app.name') }}">
+            </a>
+        </div>
+
+        <div>
+            <h1 class="pg-title">¡Bienvenido de vuelta! 🐾</h1>
+            <p class="pg-sub">Ingresa a tu cuenta para continuar</p>
+        </div>
 
         <x-validation-errors class="mb-4" />
 
         @session('status')
-            <div class="mb-4 font-medium text-sm text-green-600">
-                {{ $value }}
-            </div>
+            <div class="mb-4 font-medium text-sm text-green-600">{{ $value }}</div>
         @endsession
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login') }}" style="display:flex;flex-direction:column;gap:15px;">
             @csrf
 
-            <div>
-                <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+            <div class="pg-group">
+                <label for="email" class="pg-label">Correo electrónico</label>
+                <div class="pg-input-wrap">
+                    <span class="pg-icon">📧</span>
+                    <input id="email" name="email" type="email" class="pg-input"
+                        placeholder="hola@mipeluqueria.com"
+                        value="{{ old('email') }}" required autofocus autocomplete="username" />
+                </div>
             </div>
 
-            <div class="mt-4">
-                <x-label for="password" value="Contraseña" />
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
+            <div class="pg-group">
+                <label for="password" class="pg-label">Contraseña</label>
+                <div class="pg-input-wrap">
+                    <span class="pg-icon">🔒</span>
+                    <input id="password" name="password" type="password" class="pg-input"
+                        placeholder="••••••••" required autocomplete="current-password" />
+                </div>
             </div>
 
-            <div class="block mt-4">
-                <label for="remember_me" class="flex items-center">
-                    <x-checkbox id="remember_me" name="remember" />
-                    <span class="ms-2 text-sm text-gray-600">Recordarme</span>
+            <div class="pg-row-check">
+                <label class="pg-check-label">
+                    <input type="checkbox" name="remember" id="remember_me" />
+                    Recordarme
                 </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
                 @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                        Olvidé mi contraseña
-                    </a>
+                    <a class="pg-forgot" href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a>
                 @endif
-
-                <x-button class="ms-4">
-                    Iniciar sesión
-                </x-button>
             </div>
+
+            <button type="submit" class="pg-btn-login">
+                Iniciar sesión 🐾
+            </button>
         </form>
-    </x-authentication-card>
+
+        <div class="pg-footer">
+            Sistema de gestión para peluquería canina
+            <div class="pg-pawdots">
+                <span>🐾</span><span>🐾</span><span>🐾</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const bg = document.getElementById('pgPawsBg');
+    [{top:'7%',left:'4%',d:0},{top:'18%',left:'87%',d:1.2},
+     {top:'62%',left:'2%',d:2},{top:'82%',left:'72%',d:.6},
+     {top:'11%',left:'58%',d:2.4},{top:'88%',left:'28%',d:.9}
+    ].forEach(p=>{
+        const el=document.createElement('div');
+        el.className='pg-paw'; el.textContent='🐾';
+        el.style.cssText=`top:${p.top};left:${p.left};animation-delay:${p.d}s`;
+        bg.appendChild(el);
+    });
+</script>
 </x-guest-layout>
